@@ -204,7 +204,7 @@ Centralized configuration for all components:
 # LLM Settings
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.6-luna")
 
 # Routing Thresholds
 SIMILARITY_THRESHOLD = 0.3  # Minimum similarity for match

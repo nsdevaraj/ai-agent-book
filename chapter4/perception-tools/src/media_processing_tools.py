@@ -33,7 +33,7 @@ def _map_model_for_openrouter(model: str) -> str:
     return model
 
 
-def _make_vision_client(default_model: str = "gpt-4o-mini"):
+def _make_vision_client(default_model: str = "gpt-5.6-luna"):
     """Build an OpenAI-compatible vision client with a universal fallback.
 
     Preferred path uses OPENAI_API_KEY directly. When it is absent but an
@@ -47,13 +47,19 @@ def _make_vision_client(default_model: str = "gpt-4o-mini"):
     from openai import OpenAI
 
     model = os.getenv("PERCEPTION_VISION_MODEL", default_model)
+    or_key = os.getenv("OPENROUTER_API_KEY")
+    # gpt-5.x (incl. gpt-5.6*) needs OpenAI org-verification on the direct API;
+    # when an OpenRouter key is present, prefer routing these ids through it.
+    if or_key and model.lower().startswith("gpt-5"):
+        client = OpenAI(api_key=or_key, base_url="https://openrouter.ai/api/v1")
+        return client, _map_model_for_openrouter(model)
+
     api_key = os.getenv("OPENAI_API_KEY")
     if api_key:
         base_url = os.getenv("OPENAI_BASE_URL")
         client = OpenAI(api_key=api_key, base_url=base_url) if base_url else OpenAI(api_key=api_key)
         return client, model
 
-    or_key = os.getenv("OPENROUTER_API_KEY")
     if or_key:
         client = OpenAI(api_key=or_key, base_url="https://openrouter.ai/api/v1")
         return client, _map_model_for_openrouter(model)

@@ -49,11 +49,15 @@ def resolve_llm(model=None, primary_keys=("OPENAI_API_KEY",), primary_base_url=N
         primary_base_url: base_url used when a primary key is found
             (``None`` means the OpenAI SDK default / official endpoint).
     """
+    or_key = os.getenv("OPENROUTER_API_KEY")
+    # gpt-5.x (incl. gpt-5.6*) needs OpenAI org-verification on the direct API;
+    # when an OpenRouter key is present, prefer routing these ids through it.
+    if or_key and model and model.lower().startswith("gpt-5"):
+        return or_key, OPENROUTER_BASE_URL, map_model_to_openrouter(model)
     for env in primary_keys:
         key = os.getenv(env)
         if key:
             return key, primary_base_url, model
-    or_key = os.getenv("OPENROUTER_API_KEY")
     if or_key:
         return or_key, OPENROUTER_BASE_URL, map_model_to_openrouter(model)
     accepted = ", ".join(list(primary_keys) + ["OPENROUTER_API_KEY"])

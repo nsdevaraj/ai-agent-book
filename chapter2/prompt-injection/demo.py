@@ -229,7 +229,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--model",
         default=None,
         metavar="NAME",
-        help="使用的模型名（默认取环境变量 OPENAI_MODEL，未设置则 gpt-4o-mini）",
+        help="使用的模型名（默认取环境变量 OPENAI_MODEL，未设置则 gpt-5.6-luna）",
     )
     parser.add_argument(
         "-a",

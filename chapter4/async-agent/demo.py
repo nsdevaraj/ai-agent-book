@@ -92,20 +92,21 @@ def make_client():
         return client, model, _completion_params_for(model)
     if provider == "openrouter":
         key = os.environ["OPENROUTER_API_KEY"]
-        model = _map_model_for_openrouter(os.getenv("LLM_MODEL", "openai/gpt-4o-mini"))
+        model = _map_model_for_openrouter(os.getenv("LLM_MODEL", "openai/gpt-5.6-luna"))
         client = AsyncOpenAI(api_key=key, base_url="https://openrouter.ai/api/v1")
         return client, model, _completion_params_for(model)
     key = os.getenv("OPENAI_API_KEY")
+    or_key = os.getenv("OPENROUTER_API_KEY")
+    model = os.getenv("LLM_MODEL", "gpt-5.6-luna")
+    # gpt-5.x（含 gpt-5.6*）直连 OpenAI 需要组织验证；只要有 OPENROUTER_API_KEY，
+    # 就优先走 OpenRouter；直连 OPENAI_API_KEY 缺失时同样兜底到 OpenRouter。
+    if or_key and (not key or model.lower().startswith("gpt-5")):
+        mapped = _map_model_for_openrouter(model)
+        client = AsyncOpenAI(api_key=or_key, base_url="https://openrouter.ai/api/v1")
+        return client, mapped, _completion_params_for(mapped)
     if key:
-        model = os.getenv("LLM_MODEL", "gpt-4o-mini")
         base = os.getenv("OPENAI_BASE_URL")
         client = AsyncOpenAI(api_key=key, base_url=base) if base else AsyncOpenAI(api_key=key)
-        return client, model, _completion_params_for(model)
-    # 直连 OPENAI_API_KEY 缺失时的通用兜底：若有 OPENROUTER_API_KEY 则改走 OpenRouter。
-    or_key = os.getenv("OPENROUTER_API_KEY")
-    if or_key:
-        model = _map_model_for_openrouter(os.getenv("LLM_MODEL", "openai/gpt-4o-mini"))
-        client = AsyncOpenAI(api_key=or_key, base_url="https://openrouter.ai/api/v1")
         return client, model, _completion_params_for(model)
     raise SystemExit(
         "未找到可用的 LLM Key。请设置以下任意一项："

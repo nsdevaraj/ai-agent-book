@@ -29,7 +29,7 @@ class LogSanitizationAgent:
 
         Primary backend is the local Ollama model. If Ollama is unavailable
         (not running / not reachable) and OPENROUTER_API_KEY is set, the agent
-        falls back to OpenRouter (default hosted model: openai/gpt-4o-mini),
+        falls back to OpenRouter (default hosted model: openai/gpt-5.6-luna),
         so the experiment still runs without a local model.
         """
         self.model = model
@@ -67,9 +67,9 @@ class LogSanitizationAgent:
                 self.client = OpenAI(api_key=openrouter_key,
                                      base_url=OPENROUTER_BASE_URL)
                 # 本地小模型（qwen3:0.6b 等）在 OpenRouter 上未必可用，
-                # 默认改用 openai/gpt-4o-mini；带 "/" 的 id 原样透传。
+                # 默认改用 openai/gpt-5.6-luna；带 "/" 的 id 原样透传。
                 self.model = (map_model_to_openrouter(self.model)
-                              if "/" in self.model else "openai/gpt-4o-mini")
+                              if "/" in self.model else "openai/gpt-5.6-luna")
                 print(f"⚠️  Ollama unavailable ({e}); "
                       f"falling back to OpenRouter model: {self.model}")
             else:

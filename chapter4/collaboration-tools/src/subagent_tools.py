@@ -44,11 +44,11 @@ _subagents: Dict[str, Dict[str, Any]] = {}
 _async_tasks: Dict[str, "asyncio.Task"] = {}
 
 # Default model + client tuning. Kept consistent with intelligence_tools.py
-# (gpt-4o-mini) but overridable via env, with timeout + retries on the client.
+# (gpt-5.6-luna) but overridable via env, with timeout + retries on the client.
 # When only OPENROUTER_API_KEY is set, resolve_llm() maps the model id to
-# provider/model form (e.g. gpt-4o-mini -> openai/gpt-4o-mini).
+# provider/model form (e.g. gpt-5.6-luna -> openai/gpt-5.6-luna).
 DEFAULT_MODEL = (
-    resolve_llm()[2] if has_llm() else os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    resolve_llm()[2] if has_llm() else os.getenv("OPENAI_MODEL", "gpt-5.6-luna")
 )
 _CLIENT_TIMEOUT = float(os.getenv("OPENAI_TIMEOUT", "60"))
 _CLIENT_MAX_RETRIES = int(os.getenv("OPENAI_MAX_RETRIES", "2"))

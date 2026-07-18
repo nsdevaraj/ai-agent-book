@@ -107,14 +107,14 @@ HITL_TIMEOUT_SECONDS=3600
 ### For Browser Tasks (AI Agent)
 ```env
 OPENAI_API_KEY=your-openai-api-key
-OPENAI_MODEL=gpt-4o-mini
+OPENAI_MODEL=gpt-5.6-luna
 ```
 
 > **Universal OpenRouter fallback**: all LLM entry points (`spawn_subagent`,
 > intelligence tools, browser-use) resolve credentials via `src/llm_fallback.py`.
 > When `OPENAI_API_KEY` is absent but `OPENROUTER_API_KEY` is set, they route
 > through OpenRouter (`base_url=https://openrouter.ai/api/v1`, model id mapped to
-> `provider/model` form, e.g. `gpt-4o-mini` → `openai/gpt-4o-mini`). With neither
+> `provider/model` form, e.g. `gpt-5.6-luna` → `openai/gpt-5.6-luna`). With neither
 > key set, sub-agents run in deterministic offline mode (no fabricated output).
 
 ## Usage
@@ -175,7 +175,7 @@ python quickstart.py
 Spawn a sub-agent under **both** context-passing strategies on the same task and
 print the difference (context tokens handed off, extra preparation cost, whether
 private data leaked, and each sub-agent's result). Requires `OPENAI_API_KEY`
-(default model `gpt-4o-mini`, override with `OPENAI_MODEL`):
+(default model `gpt-5.6-luna`, override with `OPENAI_MODEL`):
 ```bash
 export OPENAI_API_KEY=sk-...
 python subagent_comparison.py

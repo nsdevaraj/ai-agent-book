@@ -269,7 +269,7 @@ def make_client(
 
     from openrouter_fallback import resolve_llm
 
-    requested_model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    requested_model = model or os.getenv("OPENAI_MODEL", "gpt-5.6-luna")
     # 允许自定义 base_url（默认官方），但请勿指向已失效的第三方网关。
     primary_base_url = base_url or os.getenv("OPENAI_BASE_URL") or None
     # OPENAI_API_KEY 存在 -> 官方直连；否则回退 OPENROUTER_API_KEY。

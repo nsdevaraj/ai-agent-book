@@ -7,7 +7,7 @@ load_dotenv()
 # LLM Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.6-luna")
 
 
 def _map_model_for_openrouter(model: str) -> str:
@@ -26,11 +26,13 @@ def _map_model_for_openrouter(model: str) -> str:
     return model
 
 
-# Universal fallback: when no direct OPENAI_API_KEY is configured but an
-# OPENROUTER_API_KEY is present, route through OpenRouter automatically so the
-# agent still runs. Explicit OPENAI_BASE_URL / OPENAI_MODEL overrides are kept.
-if not OPENAI_API_KEY and os.getenv("OPENROUTER_API_KEY"):
-    OPENAI_API_KEY = os.getenv("OPENROUTER_API_KEY")
+# Universal fallback + gpt-5.x preference: route through OpenRouter when no direct
+# OPENAI_API_KEY is configured, OR when the model is a gpt-5.x id (incl. gpt-5.6*)
+# which needs OpenAI org-verification on the direct API. Explicit OPENAI_BASE_URL /
+# OPENAI_MODEL overrides are kept.
+_OR_KEY = os.getenv("OPENROUTER_API_KEY")
+if _OR_KEY and (not OPENAI_API_KEY or OPENAI_MODEL.lower().startswith("gpt-5")):
+    OPENAI_API_KEY = _OR_KEY
     if not os.getenv("OPENAI_BASE_URL"):
         OPENAI_BASE_URL = "https://openrouter.ai/api/v1"
     OPENAI_MODEL = _map_model_for_openrouter(OPENAI_MODEL)

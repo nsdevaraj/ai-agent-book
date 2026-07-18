@@ -338,7 +338,7 @@ class ContextAwareAgent:
             "doubao": ("https://ark.cn-beijing.volces.com/api/v3", "doubao-seed-1-6-thinking-250715"),
             "kimi": ("https://api.moonshot.cn/v1", "kimi-k3"),
             "moonshot": ("https://api.moonshot.cn/v1", "kimi-k3"),
-            "openrouter": ("https://openrouter.ai/api/v1", "openai/gpt-4o-mini"),
+            "openrouter": ("https://openrouter.ai/api/v1", "openai/gpt-5.6-luna"),
         }
         if self.provider not in provider_defaults:
             raise ValueError(

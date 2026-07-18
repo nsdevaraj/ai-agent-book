@@ -69,13 +69,13 @@ AUTO_VERIFY_CODE=true
 - `siliconflow`: Qwen/Qwen3-235B-A22B-Thinking-2507
 - `doubao`: doubao-seed-1-6-thinking-250715  
 - `kimi`/`moonshot`: kimi-k3
-- `openrouter`: google/gemini-2.5-pro (or openai/gpt-5, anthropic/claude-sonnet-4)
+- `openrouter`: google/gemini-3.5-flash (or openai/gpt-5.6-luna, anthropic/claude-sonnet-4.6)
 
 > **Universal OpenRouter fallback**: when the configured `PROVIDER`'s key is
 > missing but `OPENROUTER_API_KEY` is set, the LLM steps (approval,
 > summarization, error/syntax analysis) transparently switch to `openrouter`
 > via `Config.effective_provider()`. Set `MODEL` to a `provider/model` id for
-> OpenRouter, e.g. `MODEL=openai/gpt-4o-mini`.
+> OpenRouter, e.g. `MODEL=openai/gpt-5.6-luna`.
 
 ## Usage
 

@@ -3,7 +3,7 @@
 实验 2-6：使用 Agent Skills 从论文生成演示文稿（自建同构 Skills 机制）
 
 本 demo 复现《深入理解 AI Agent》第二章「Agent Skills / 渐进式披露」一节的思想。
-由于 Anthropic key 无效，这里用 OpenAI（gpt-4o-mini）+ 一套自建的、与 Anthropic
+由于 Anthropic key 无效，这里用 OpenAI（gpt-5.6-luna）+ 一套自建的、与 Anthropic
 Skills 同构的机制来演示，核心是「渐进式披露（Progressive Disclosure）」：
 
   第一层（元数据）：Agent 启动时的 system prompt 里只放各 Skill 的 name +
@@ -43,7 +43,7 @@ ROOT = Path(__file__).resolve().parent
 SKILLS_DIR = ROOT / "skills"
 PAPER_PATH = ROOT / "papers" / "sample_paper.md"
 OUTPUT_DIR = ROOT / "output"
-MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+MODEL = os.environ.get("OPENAI_MODEL", "gpt-5.6-luna")
 
 
 def log(msg: str) -> None:
@@ -381,7 +381,7 @@ def parse_args():
     p.add_argument("--output", "-o", default=str(OUTPUT_DIR / "presentation.pptx"),
                    help="输出 .pptx 路径，默认 output/presentation.pptx。")
     p.add_argument("--model", default=MODEL,
-                   help="OpenAI 模型名，默认取环境变量 OPENAI_MODEL，否则 gpt-4o-mini。")
+                   help="OpenAI 模型名，默认取环境变量 OPENAI_MODEL，否则 gpt-5.6-luna。")
     p.add_argument("--max-turns", type=int, default=8,
                    help="agentic loop 的最大轮数，默认 8。")
     p.add_argument("--offline", action="store_true",

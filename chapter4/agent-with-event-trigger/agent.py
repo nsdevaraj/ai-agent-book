@@ -290,9 +290,9 @@ class EventTriggeredAgent:
                 api_key=api_key,
                 base_url="https://openrouter.ai/api/v1"
             )
-            # Default to Gemini 2.5 Pro, but allow any of the supported models
-            self.model = model or "google/gemini-2.5-pro"
-            # Supported models: google/gemini-2.5-pro, openai/gpt-5, anthropic/claude-sonnet-4
+            # Default to Gemini 3.5 Flash, but allow any of the supported models
+            self.model = model or "google/gemini-3.5-flash"
+            # Supported models: google/gemini-3.5-flash, openai/gpt-5.6-luna, anthropic/claude-sonnet-4.6
         else:
             raise ValueError(f"Unsupported provider: {provider}. Use 'siliconflow', 'doubao', 'kimi', 'moonshot', or 'openrouter'")
         

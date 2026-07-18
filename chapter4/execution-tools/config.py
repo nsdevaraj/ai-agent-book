@@ -131,7 +131,7 @@ class Config:
                 "provider": "openrouter",
                 "api_key": api_key,
                 "base_url": "https://openrouter.ai/api/v1",
-                "model": cls.MODEL or "google/gemini-2.5-pro"
+                "model": cls.MODEL or "google/gemini-3.5-flash"
             }
         else:
             raise ValueError(

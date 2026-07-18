@@ -53,7 +53,7 @@ MOONSHOT_API_KEY=your-api-key-here
 
 **通用兜底（OpenRouter）**: 若未设置 `MOONSHOT_API_KEY`/`KIMI_API_KEY` 但设置了
 `OPENROUTER_API_KEY`，请求会自动改走 OpenRouter，使用 `OPENROUTER_MODEL`（默认
-`openai/gpt-4o-mini`）。**重要限制**：Kimi 内置的 `$web_search` 工具是 Moonshot 专有能力，
+`openai/gpt-5.6-luna`）。**重要限制**：Kimi 内置的 `$web_search` 工具是 Moonshot 专有能力，
 在 OpenRouter 上不可用——因此兜底模式下模型仅凭自身知识作答，**没有实时联网搜索**。
 如需真正的联网搜索，请使用 Moonshot 主 key。
 

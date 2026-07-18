@@ -5,7 +5,7 @@ SAME task and prints the difference (context tokens handed off, extra
 preparation cost, whether private data leaked, and each sub-agent's result).
 
 Run:
-    export OPENAI_API_KEY=sk-...        # required (default model: gpt-4o-mini)
+    export OPENAI_API_KEY=sk-...        # or OPENROUTER_API_KEY (default model: gpt-5.6-luna)
     python subagent_comparison.py
 """
 
@@ -20,7 +20,8 @@ from subagent_tools import run_context_strategy_comparison  # noqa: E402
 
 
 if __name__ == "__main__":
-    if not os.getenv("OPENAI_API_KEY"):
-        print("OPENAI_API_KEY not set. Export it first (default model: gpt-4o-mini).")
+    if not os.getenv("OPENAI_API_KEY") and not os.getenv("OPENROUTER_API_KEY"):
+        print("No LLM key set. Export OPENAI_API_KEY or OPENROUTER_API_KEY "
+              "(universal fallback; default model: gpt-5.6-luna).")
         sys.exit(1)
     asyncio.run(run_context_strategy_comparison())

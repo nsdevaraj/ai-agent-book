@@ -39,7 +39,7 @@ def parse_args():
         epilog=(
             "示例：\n"
             "  # 基线（结构化提示词 + 完整工具描述 + 专业中立语气），跑前 10 个任务\n"
-            "  python run_ablation.py --model gpt-4o-mini --env airline --end-index 10\n\n"
+            "  python run_ablation.py --model gpt-5.6-luna --env airline --end-index 10\n\n"
             "  # 单个消融：打乱 wiki 规则的组织结构\n"
             "  python run_ablation.py --env airline --randomize-wiki --end-index 10\n\n"
             "  # 一键跑完整套消融并打印对比表（基线 + 各维度 + 全部叠加）\n"
@@ -60,8 +60,8 @@ def parse_args():
     parser.add_argument(
         "--model",
         type=str,
-        default="gpt-4o-mini",
-        help="The model to use for the agent (default: gpt-4o-mini, via OpenAI direct)",
+        default="gpt-5.6-luna",
+        help="The model to use for the agent (default: gpt-5.6-luna; routed via OpenRouter when OPENROUTER_API_KEY is set, else OpenAI direct)",
     )
     parser.add_argument(
         "--model-provider",
@@ -73,8 +73,8 @@ def parse_args():
     parser.add_argument(
         "--user-model",
         type=str,
-        default="gpt-4o-mini",
-        help="The model to use for the user simulator (default: gpt-4o-mini, via OpenAI direct)",
+        default="gpt-5.6-luna",
+        help="The model to use for the user simulator (default: gpt-5.6-luna; routed via OpenRouter when OPENROUTER_API_KEY is set, else OpenAI direct)",
     )
     parser.add_argument(
         "--user-model-provider",
@@ -184,12 +184,17 @@ def parse_args():
     # OPENAI_API_KEY is missing while OPENROUTER_API_KEY is present, route the
     # bare gpt-* / o1-* id through OpenRouter (prefix "openai/"). Preserves the
     # default (OpenAI-direct) behavior whenever OPENAI_API_KEY is set.
-    if not os.environ.get("OPENAI_API_KEY") and os.environ.get("OPENROUTER_API_KEY"):
-        if args.model_provider == "openai":
+    # gpt-5.x (incl. gpt-5.6*) needs OpenAI org-verification on the direct API, so
+    # when an OPENROUTER_API_KEY is present we route these ids (and any bare
+    # gpt-*/o1-* when OPENAI_API_KEY is missing) through OpenRouter (prefix
+    # "openai/"). Direct-OpenAI behavior is preserved otherwise.
+    if os.environ.get("OPENROUTER_API_KEY"):
+        no_openai = not os.environ.get("OPENAI_API_KEY")
+        if args.model_provider == "openai" and (no_openai or args.model.lower().startswith("gpt-5")):
             args.model_provider = "openrouter"
             if "/" not in args.model:
                 args.model = "openai/" + args.model
-        if args.user_model_provider == "openai":
+        if args.user_model_provider == "openai" and (no_openai or args.user_model.lower().startswith("gpt-5")):
             args.user_model_provider = "openrouter"
             if "/" not in args.user_model:
                 args.user_model = "openai/" + args.user_model

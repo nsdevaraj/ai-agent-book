@@ -30,6 +30,8 @@ def map_model_for_openrouter(model: str) -> str:
         return f"openai/{model}"
     if m.startswith("claude-"):
         return "anthropic/claude-opus-4.8"
+    if m.startswith("kimi"):
+        return "moonshotai/kimi-k2.6"
     return model
 
 
@@ -38,18 +40,23 @@ def has_llm() -> bool:
     return bool(os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY"))
 
 
-def resolve_llm(default_model: str = "gpt-4o-mini") -> Tuple[str, Optional[str], str]:
+def resolve_llm(default_model: str = "gpt-5.6-luna") -> Tuple[str, Optional[str], str]:
     """Resolve (api_key, base_url, model), applying the OpenRouter fallback.
 
     Raises RuntimeError listing the accepted keys when neither credential is set.
     """
     model = os.getenv("OPENAI_MODEL", default_model)
 
+    or_key = os.getenv("OPENROUTER_API_KEY")
+    # gpt-5.x (incl. gpt-5.6*) needs OpenAI org-verification on the direct API;
+    # when an OpenRouter key is present, prefer routing these ids through it.
+    if or_key and model.lower().startswith("gpt-5"):
+        return or_key, "https://openrouter.ai/api/v1", map_model_for_openrouter(model)
+
     api_key = os.getenv("OPENAI_API_KEY")
     if api_key:
         return api_key, os.getenv("OPENAI_BASE_URL"), model
 
-    or_key = os.getenv("OPENROUTER_API_KEY")
     if or_key:
         return or_key, "https://openrouter.ai/api/v1", map_model_for_openrouter(model)
 

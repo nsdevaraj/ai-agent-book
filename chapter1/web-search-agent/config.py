@@ -26,7 +26,10 @@ def map_model_to_openrouter(model: str) -> str:
         if "haiku" in ml:
             return "anthropic/claude-haiku-4.5"
         return "anthropic/claude-opus-4.8"
-    return os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
+    if ml.startswith("kimi"):
+        # kimi-k3 is not on OpenRouter; moonshotai/kimi-k2.6 is the closest hosted id.
+        return "moonshotai/kimi-k2.6"
+    return os.getenv("OPENROUTER_MODEL", "openai/gpt-5.6-luna")
 
 
 def resolve_llm_backend(primary_key: str, primary_base_url: str, model: str):
@@ -38,9 +41,14 @@ def resolve_llm_backend(primary_key: str, primary_base_url: str, model: str):
       the model id to an OpenRouter id.
     - Else raise a clear error listing the accepted keys.
     """
+    openrouter_key = os.getenv("OPENROUTER_API_KEY")
+    # gpt-5.x (incl. gpt-5.6*) needs OpenAI org-verification on the direct API;
+    # when an OpenRouter key is present, prefer routing these ids through it.
+    if openrouter_key and str(model or "").lower().startswith("gpt-5"):
+        base_url = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+        return openrouter_key, base_url, map_model_to_openrouter(model), True
     if primary_key:
         return primary_key, primary_base_url, model, False
-    openrouter_key = os.getenv("OPENROUTER_API_KEY")
     if openrouter_key:
         base_url = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
         return openrouter_key, base_url, map_model_to_openrouter(model), True

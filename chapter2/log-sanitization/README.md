@@ -66,7 +66,7 @@ Based on the privacy protection architecture, Level 3 PII includes highly sensit
 
 > **通用回退（OpenRouter）**：本实验默认用本地 Ollama 小模型。若 Ollama 不可用
 > （未运行 / 不可达）且设置了 `OPENROUTER_API_KEY`，Agent 会自动改走 OpenRouter
-> （默认托管模型 `openai/gpt-4o-mini`）。想强制走回退做验证，可把 Ollama 指到一个
+> （默认托管模型 `openai/gpt-5.6-luna`）。想强制走回退做验证，可把 Ollama 指到一个
 > 不可达端口：`export OLLAMA_HOST=http://127.0.0.1:1`。
 
 #### macOS:

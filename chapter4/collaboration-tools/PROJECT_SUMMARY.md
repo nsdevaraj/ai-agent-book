@@ -142,7 +142,7 @@ TIMER_STORAGE_PATH=~/.config/collaboration-tools/timers.json
 
 # AI (for browser tasks)
 OPENAI_API_KEY=your-key
-OPENAI_MODEL=gpt-4o-mini
+OPENAI_MODEL=gpt-5.6-luna
 ```
 
 ## Usage

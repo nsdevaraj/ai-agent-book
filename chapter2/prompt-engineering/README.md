@@ -68,7 +68,7 @@ pip install -r requirements.txt
 
 ```bash
 python run_ablation.py \
-    --model gpt-4o-mini \
+    --model gpt-5.6-luna \
     --env airline \
     --end-index 10 \
     --all
@@ -101,7 +101,7 @@ all_ablations                     0.0%         0/  4        0.0%
 
 ```bash
 python run_ablation.py \
-    --model gpt-4o-mini \
+    --model gpt-5.6-luna \
     --env airline \
     --task-split test \
     --start-index 0 \
@@ -114,7 +114,7 @@ python run_ablation.py \
 #### Trump 风格
 ```bash
 python run_ablation.py \
-    --model gpt-4o-mini \
+    --model gpt-5.6-luna \
     --env airline \
     --tone-style trump \
     --ablation-name trump_tone
@@ -123,7 +123,7 @@ python run_ablation.py \
 #### 休闲风格
 ```bash
 python run_ablation.py \
-    --model gpt-4o-mini \
+    --model gpt-5.6-luna \
     --env airline \
     --tone-style casual \
     --ablation-name casual_tone
@@ -133,7 +133,7 @@ python run_ablation.py \
 
 ```bash
 python run_ablation.py \
-    --model gpt-4o-mini \
+    --model gpt-5.6-luna \
     --env airline \
     --randomize-wiki \
     --ablation-name wiki_random
@@ -143,7 +143,7 @@ python run_ablation.py \
 
 ```bash
 python run_ablation.py \
-    --model gpt-4o-mini \
+    --model gpt-5.6-luna \
     --env airline \
     --remove-tool-descriptions \
     --ablation-name no_tool_desc
@@ -155,7 +155,7 @@ python run_ablation.py \
 
 ```bash
 python run_ablation.py \
-    --model gpt-4o-mini \
+    --model gpt-5.6-luna \
     --env airline \
     --tone-style casual \
     --randomize-wiki \
@@ -174,7 +174,7 @@ python run_ablation.py \
 
 ```bash
 # 默认 10 个任务/实验；--quick 用 3 个任务快速冒烟
-./run_full_ablation.sh --model gpt-4o-mini --env airline --num-tasks 10
+./run_full_ablation.sh --model gpt-5.6-luna --env airline --num-tasks 10
 ./run_full_ablation.sh --quick
 ```
 

@@ -20,7 +20,7 @@ Anthropic key 无效，本项目**自建了一套同构的 Skills 机制**来复
 
 | 维度 | Anthropic PPTX Skill（书中） | 本项目（自建同构版） |
 |------|------------------------------|----------------------|
-| 运行时 | Claude Code | Python + OpenAI SDK（`gpt-4o-mini`） |
+| 运行时 | Claude Code | Python + OpenAI SDK（`gpt-5.6-luna`） |
 | 第一层·元数据 | 启动注入所有 Skill 的 name+description | `scan_skill_catalog()` 只读 frontmatter 拼进 system prompt |
 | 第二层·核心流程 | Skill 工具加载完整 `SKILL.md` | `read_skill` 工具加载 `skills/pptx/SKILL.md` |
 | 第三层·细则 | 引用 `html2pptx.md` / `reference.md` | `read_skill_file` 读 `reference.md` / 脚本源码 |
@@ -29,7 +29,7 @@ Anthropic key 无效，本项目**自建了一套同构的 Skills 机制**来复
 机制一一对应，只是把「Claude 内置的 Skill 加载器」换成了几个显式的读取/执行工具，
 从而在没有 Anthropic 访问权限时，依然能真实演示渐进式披露的三层加载过程。
 
-> 说明：本项目主用 OpenAI（默认模型 gpt-4o-mini）。**通用回退**：未设置
+> 说明：本项目主用 OpenAI（默认模型 gpt-5.6-luna）。**通用回退**：未设置
 > `OPENAI_API_KEY` 时，只要配置了 `OPENROUTER_API_KEY`，会自动改走 OpenRouter
 > （`gpt-*` 映射为 `openai/…`）。设置了 `OPENAI_API_KEY` 时行为完全不变。
 
@@ -59,7 +59,7 @@ skills/
 ```bash
 pip install -r requirements.txt
 cp env.example .env        # 或直接 export
-export OPENAI_API_KEY=sk-...   # 默认模型 gpt-4o-mini，可用 OPENAI_MODEL 覆盖
+export OPENAI_API_KEY=sk-...   # 默认模型 gpt-5.6-luna，可用 OPENAI_MODEL 覆盖
 python demo.py
 python demo.py --paper papers/your_paper.md    # 换一篇论文/大纲
 python demo.py -o output/deck.pptx --model gpt-4o   # 指定输出路径 / 模型
@@ -76,7 +76,7 @@ python demo.py --help                          # 查看全部参数
 |------|--------|------|
 | `--paper` | `papers/sample_paper.md` | 输入论文/大纲（markdown）路径 |
 | `--output` / `-o` | `output/presentation.pptx` | 输出 `.pptx` 路径 |
-| `--model` | `OPENAI_MODEL` 或 `gpt-4o-mini` | OpenAI 模型名 |
+| `--model` | `OPENAI_MODEL` 或 `gpt-5.6-luna` | OpenAI 模型名 |
 | `--max-turns` | `8` | agentic loop 的最大轮数 |
 | `--offline` | 关 | 离线演示，不调用 OpenAI（见下） |
 

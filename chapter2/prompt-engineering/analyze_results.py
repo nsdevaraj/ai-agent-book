@@ -358,7 +358,7 @@ def main():
     if not results:
         print(f"\n❌ No results found in {args.results_dir}/")
         print("Please run experiments first using:")
-        print("  python run_ablation.py --model gpt-4o-mini --env airline --all")
+        print("  python run_ablation.py --model gpt-5.6-luna --env airline --all")
         sys.exit(1)
 
     # Run all analyses
