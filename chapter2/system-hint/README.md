@@ -59,7 +59,7 @@ python main.py --mode preview
 
 ```bash
 # Clone the repository (if not already done)
-cd projects/week2/system-hint
+cd chapter2/system-hint
 
 # Install dependencies
 pip install -r requirements.txt
@@ -94,7 +94,9 @@ python main.py --mode demo --demo loop
 python main.py --mode demo --demo comparison
 
 # Disable specific features (works for both preview and live modes)
-python main.py --no-todo --no-timestamps --task "Simple task"
+python main.py --mode single --no-todo --no-timestamps --task "Simple task"
+# Or observe the effect offline (no API key):
+python main.py --mode preview --no-todo --no-timestamps
 
 # Quick start with sample task
 python quickstart.py
@@ -148,10 +150,13 @@ system-hint/
 ├── config.py         # Configuration management
 ├── quickstart.py     # Quick demo script
 ├── test_basic.py     # Basic tests
+├── test_hint_behavior.py # System-hint behavior tests
 ├── view_trajectory.py # Trajectory viewing utility
 ├── requirements.txt  # Python dependencies
 ├── env.example       # Environment variable template
 ├── trajectory.json   # Auto-saved trajectory (created at runtime)
+├── CHANGELOG.md      # Change log
+├── NOTES.md          # Design notes
 └── README.md        # This file
 ```
 

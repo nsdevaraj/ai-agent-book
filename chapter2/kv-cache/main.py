@@ -14,9 +14,14 @@ from datetime import datetime
 from dataclasses import asdict
 from agent import KVCacheAgent, KVCacheMode, AgentMetrics, compare_implementations
 
-# Default model (Moonshot / Kimi). Reasoning models only accept temperature=1;
-# agent.py handles that automatically.
-DEFAULT_MODEL = "kimi-k3"
+# Default model (Moonshot / Kimi). The whole current Kimi family (k2.5/k2.6/
+# k2.7/k3) reports cached_tokens for automatic prefix caching AND reasons, so it
+# only accepts temperature=1 (agent.py handles that automatically). kimi-k2.6 has
+# the lightest reasoning footprint of the cache-reporting models, giving the
+# cleanest TTFT while still exposing the prefix-cache hit metric this demo needs.
+# (The non-reasoning moonshot-v1-* models do NOT report cached_tokens, so they
+# cannot demonstrate the cache effect.)
+DEFAULT_MODEL = "kimi-k2.6"
 
 # Configure logging
 logging.basicConfig(
@@ -448,7 +453,7 @@ def main():
                "  python main.py --mode correct                  # 运行单个策略\n"
                "  python main.py --compare                       # 一次跑完所有策略并打印对比表\n"
                "  python main.py --report                        # 离线：读取已有 result_*.json 打印对比表（无需 API Key）\n"
-               "  python main.py --mode sliding_window --model kimi-k3 --output run.json\n"
+               "  python main.py --mode sliding_window --model kimi-k2.6 --output run.json\n"
                "\n可选策略（--mode）：correct, dynamic_system, shuffled_tools,\n"
                "                      dynamic_profile, sliding_window, text_format",
         formatter_class=argparse.RawDescriptionHelpFormatter,

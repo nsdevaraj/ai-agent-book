@@ -213,7 +213,10 @@ def analyze_ablation_impact(results: Dict[str, List[float]]):
                     severity = "🟢 Low"
                 
                 impacts.append((factor_name, impact, relative_impact, severity))
-                print(f"{factor_name:<25} {f'-{impact:.1f}%':>20} ({relative_impact:.1f}%) {severity:>15}")
+                # `impact` is baseline - experiment: positive = degradation (show as
+                # e.g. "-25.0%"), negative = the ablation outperformed baseline (small
+                # samples can do this) and should read as "+25.0%", not "--25.0%".
+                print(f"{factor_name:<25} {f'{-impact:+.1f}%':>20} ({relative_impact:.1f}%) {severity:>15}")
                 break
     
     print("-"*70)
@@ -355,7 +358,7 @@ def main():
     if not results:
         print(f"\n❌ No results found in {args.results_dir}/")
         print("Please run experiments first using:")
-        print("  python run_ablation.py --model openai/gpt-5 --env airline --all")
+        print("  python run_ablation.py --model gpt-4o-mini --env airline --all")
         sys.exit(1)
 
     # Run all analyses

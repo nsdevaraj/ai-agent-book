@@ -20,6 +20,19 @@ def _reasoning_safe_temperature(model, requested=1.0):
     m = str(model or "").lower().replace("/", "-")
     return 1 if ("kimi-k3" in m or "gpt-5" in m) else requested
 
+
+def _reasoning_safe_max_tokens(model, requested, reasoning_budget=2048):
+    """Reasoning models (Kimi K3, GPT-5, ...) spend part of the max_tokens
+    budget on reasoning_content *before* emitting the visible answer. If we
+    pass only the summary budget (e.g. 300-500), the reasoning trace can eat
+    into it and the summary comes back truncated or empty. Give reasoning
+    models extra headroom so the requested output budget is fully available
+    for the summary itself; non-reasoning models are unchanged."""
+    m = str(model or "").lower().replace("/", "-")
+    if "kimi-k3" in m or "gpt-5" in m:
+        return requested + reasoning_budget
+    return requested
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format=Config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -166,7 +179,7 @@ Provide a focused summary:"""
                         {"role": "user", "content": prompt}
                     ],
                     temperature=_reasoning_safe_temperature(self.model, 0.3),
-                    max_tokens=Config.SUMMARY_MAX_TOKENS,
+                    max_tokens=_reasoning_safe_max_tokens(self.model, Config.SUMMARY_MAX_TOKENS),
                     stream=True
                 )
                 
@@ -186,7 +199,7 @@ Provide a focused summary:"""
                         {"role": "user", "content": prompt}
                     ],
                     temperature=_reasoning_safe_temperature(self.model, 0.3),
-                    max_tokens=Config.SUMMARY_MAX_TOKENS
+                    max_tokens=_reasoning_safe_max_tokens(self.model, Config.SUMMARY_MAX_TOKENS)
                 )
                 compressed = response.choices[0].message.content
             
@@ -278,7 +291,7 @@ Provide a concise summary:"""
                             {"role": "user", "content": prompt}
                         ],
                         temperature=_reasoning_safe_temperature(self.model, 0.3),
-                        max_tokens=300,
+                        max_tokens=_reasoning_safe_max_tokens(self.model, 300),
                         stream=True
                     )
                     
@@ -298,7 +311,7 @@ Provide a concise summary:"""
                             {"role": "user", "content": prompt}
                         ],
                         temperature=_reasoning_safe_temperature(self.model, 0.3),
-                        max_tokens=300
+                        max_tokens=_reasoning_safe_max_tokens(self.model, 300)
                     )
                     summary = response.choices[0].message.content
                 
@@ -387,7 +400,7 @@ Provide a comprehensive summary:"""
                         {"role": "user", "content": prompt}
                     ],
                     temperature=_reasoning_safe_temperature(self.model, 0.3),
-                    max_tokens=Config.SUMMARY_MAX_TOKENS,
+                    max_tokens=_reasoning_safe_max_tokens(self.model, Config.SUMMARY_MAX_TOKENS),
                     stream=True
                 )
                 
@@ -407,7 +420,7 @@ Provide a comprehensive summary:"""
                         {"role": "user", "content": prompt}
                     ],
                     temperature=_reasoning_safe_temperature(self.model, 0.3),
-                    max_tokens=Config.SUMMARY_MAX_TOKENS
+                    max_tokens=_reasoning_safe_max_tokens(self.model, Config.SUMMARY_MAX_TOKENS)
                 )
                 summary = response.choices[0].message.content
             
@@ -495,7 +508,7 @@ Provide a query-focused summary:"""
                         {"role": "user", "content": prompt}
                     ],
                     temperature=_reasoning_safe_temperature(self.model, 0.3),
-                    max_tokens=Config.SUMMARY_MAX_TOKENS,
+                    max_tokens=_reasoning_safe_max_tokens(self.model, Config.SUMMARY_MAX_TOKENS),
                     stream=True
                 )
                 
@@ -515,7 +528,7 @@ Provide a query-focused summary:"""
                         {"role": "user", "content": prompt}
                     ],
                     temperature=_reasoning_safe_temperature(self.model, 0.3),
-                    max_tokens=Config.SUMMARY_MAX_TOKENS
+                    max_tokens=_reasoning_safe_max_tokens(self.model, Config.SUMMARY_MAX_TOKENS)
                 )
                 summary = response.choices[0].message.content
             
@@ -607,7 +620,7 @@ Provide a query-focused summary with citations:"""
                         {"role": "user", "content": prompt}
                     ],
                     temperature=_reasoning_safe_temperature(self.model, 0.3),
-                    max_tokens=Config.SUMMARY_MAX_TOKENS,
+                    max_tokens=_reasoning_safe_max_tokens(self.model, Config.SUMMARY_MAX_TOKENS),
                     stream=True
                 )
                 
@@ -627,7 +640,7 @@ Provide a query-focused summary with citations:"""
                         {"role": "user", "content": prompt}
                     ],
                     temperature=_reasoning_safe_temperature(self.model, 0.3),
-                    max_tokens=Config.SUMMARY_MAX_TOKENS
+                    max_tokens=_reasoning_safe_max_tokens(self.model, Config.SUMMARY_MAX_TOKENS)
                 )
                 summary = response.choices[0].message.content
             

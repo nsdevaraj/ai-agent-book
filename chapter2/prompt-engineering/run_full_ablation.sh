@@ -6,8 +6,9 @@
 set -e  # Exit on error
 
 # Configuration
-MODEL="${MODEL:-openai/gpt-5}"
-# Provider will be auto-detected based on model (openrouter for openai/gpt-5)
+MODEL="${MODEL:-gpt-4o-mini}"
+# Provider is auto-detected from the model id: a bare id (gpt-4o-mini) uses OpenAI
+# direct (OPENAI_API_KEY); an id containing '/' (openai/gpt-5) uses OpenRouter (OPENROUTER_API_KEY).
 ENV="${ENV:-airline}"
 NUM_TASKS="${NUM_TASKS:-10}"  # Number of tasks to run per experiment
 
@@ -50,7 +51,7 @@ main() {
     
     echo "Configuration:"
     echo "  Model: $MODEL"
-    echo "  Provider: Auto-detected (OpenRouter for openai/gpt-5)"
+    echo "  Provider: Auto-detected (OpenAI for bare ids, OpenRouter for ids with '/')"
     echo "  Environment: $ENV"
     echo "  Tasks per experiment: $NUM_TASKS"
     echo ""
@@ -115,10 +116,10 @@ check_prerequisites() {
         fi
     done
     
-    # Check API key based on model
-    if [[ "$MODEL" == "openai/gpt-5" ]]; then
+    # Check API key based on model (ids with '/' route through OpenRouter)
+    if [[ "$MODEL" == */* ]]; then
         if [ -z "$OPENROUTER_API_KEY" ]; then
-            echo -e "${YELLOW}Warning: OPENROUTER_API_KEY not set for openai/gpt-5${NC}"
+            echo -e "${YELLOW}Warning: OPENROUTER_API_KEY not set for model '$MODEL'${NC}"
             echo "Please set: export OPENROUTER_API_KEY='your-key'"
             read -p "Continue anyway? (y/n) " -n 1 -r
             echo
@@ -148,7 +149,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         --provider)
             echo "Note: Provider is now auto-detected based on model"
-            echo "      (OpenRouter for openai/gpt-5, OpenAI for others)"
+            echo "      (OpenRouter for ids with '/', OpenAI for bare ids)"
             shift 2
             ;;
         --env)
@@ -167,7 +168,7 @@ while [[ $# -gt 0 ]]; do
         --help)
             echo "Usage: $0 [options]"
             echo "Options:"
-            echo "  --model MODEL        Model to use (default: openai/gpt-5)"
+            echo "  --model MODEL        Model to use (default: gpt-4o-mini)"
             echo "  --provider           (Deprecated - auto-detected based on model)"
             echo "  --env ENV           Environment to use (default: airline)"
             echo "  --num-tasks N       Number of tasks per experiment (default: 10)"

@@ -1,8 +1,0 @@
-{
-  "success": true,
-  "final_answer": "I'll analyze and summarize all the projects in the week1 and week2 directories. Let me start by exploring the structure of these directories.\n\n<use_mana>\n<func_name>find</func_name>\n<parameters>\n<directory>.</directory>\n<pattern>week*</pattern>\n</parameters>\n</use_mana>",
-  "iterations": 1,
-  "tool_calls": [],
-  "metrics": "AgentMetrics(ttft=4.437747955322266, ttft_per_iteration=[4.437747955322266], total_time=4.437941074371338, iterations=1, tool_calls=0, cache_hits=1, cache_misses=0, prompt_tokens=501, completion_tokens=65, cached_tokens=501)",
-  "mode": "correct"
-}

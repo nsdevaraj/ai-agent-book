@@ -66,8 +66,10 @@ cp env.example .env
 ```
 
 Required API keys:
-- `MOONSHOT_API_KEY`: For the Kimi (Moonshot) model (required). The book's 实验 2-9 uses Kimi K3 (128K window);
-  the model name is configurable via `MODEL_NAME` in `.env` or the `-m/--model` CLI flag (e.g. `kimi-k2.5`, `kimi-k3`, `moonshot-v1-128k`).
+- `MOONSHOT_API_KEY`: For the Kimi (Moonshot) model (required). The book's 实验 2-9 uses Kimi K3 (a reasoning
+  model whose real context window is ~1M tokens; the demo deliberately caps context at a 128K budget via
+  `CONTEXT_WINDOW_SIZE` so the overflow/compression behavior is observable). The model name is configurable via
+  `MODEL_NAME` in `.env` or the `-m/--model` CLI flag (e.g. `kimi-k2.5`, `kimi-k3`, `moonshot-v1-128k`).
 - `SERPER_API_KEY`: For web search (optional, will use mock data if not provided)
 
 Get API keys:
@@ -240,7 +242,7 @@ Edit `.env` or `config.py` for:
 - `MAX_ITERATIONS`: Maximum tool calls (default: 50)
 - `MAX_WEBPAGE_LENGTH`: Max chars per webpage (default: 50000)
 - `SUMMARY_MAX_TOKENS`: Max tokens for summaries (default: 500)
-- `CONTEXT_WINDOW_SIZE`: Model context limit (default: 128000)
+- `CONTEXT_WINDOW_SIZE`: Context budget for the demo's overflow/compression trigger (default: 128000; note Kimi K3's real window is ~1M tokens — this is an intentionally smaller budget so compression is exercised)
 
 ## Troubleshooting
 

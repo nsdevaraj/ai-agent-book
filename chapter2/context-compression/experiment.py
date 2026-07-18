@@ -269,7 +269,10 @@ class ExperimentRunner:
         if failed:
             print(f"\n  Failed Strategies:")
             for r in failed:
-                print(f"    - {r['metrics']['strategy']}: {r['metrics'].get('error', 'Unknown error')[:50]}...")
+                # error may be present-but-None when a strategy fails by hitting the
+                # iteration cap (rather than raising), so coalesce before slicing.
+                err = r['metrics'].get('error') or 'No final answer within max iterations'
+                print(f"    - {r['metrics']['strategy']}: {err[:50]}...")
         
         # Key findings
         print(f"\n{Fore.CYAN}🔍 Key Findings:{Style.RESET_ALL}")

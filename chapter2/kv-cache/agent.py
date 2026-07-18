@@ -19,12 +19,30 @@ import glob as glob_module
 import subprocess
 
 
-def _reasoning_safe_temperature(model, requested=1.0):
-    """Reasoning models (Kimi K3, GPT-5, ...) only accept temperature=1.
-    Return 1 for those; otherwise the requested value so non-reasoning
-    providers (Doubao, DeepSeek, older Moonshot) are unchanged."""
+def _is_reasoning_model(model) -> bool:
+    """True for models that emit reasoning_content and only accept temperature=1.
+
+    On the live Moonshot endpoint the whole current Kimi family reasons:
+    kimi-k2.5 / kimi-k2.6 / kimi-k2.7* / kimi-k3. The legacy moonshot-v1-*
+    chat models do NOT reason (and also do not report cached_tokens)."""
     m = str(model or "").lower().replace("/", "-")
-    return 1 if ("kimi-k3" in m or "gpt-5" in m) else requested
+    if "gpt-5" in m:
+        return True
+    return any(tag in m for tag in ("kimi-k2.5", "kimi-k2.6", "kimi-k2.7", "kimi-k3"))
+
+
+def _reasoning_safe_temperature(model, requested=1.0):
+    """Reasoning models (Kimi K2.5/K2.6/K2.7/K3, GPT-5, ...) only accept
+    temperature=1. Return 1 for those; otherwise the requested value so
+    non-reasoning providers (moonshot-v1, Doubao, DeepSeek) are unchanged."""
+    return 1 if _is_reasoning_model(model) else requested
+
+
+def _reasoning_safe_max_tokens(model, requested=2000):
+    """Reasoning models spend completion budget on hidden reasoning tokens
+    before emitting content / tool calls. Give them enough headroom so a
+    tool call is not truncated away; leave non-reasoning models unchanged."""
+    return max(requested, 4096) if _is_reasoning_model(model) else requested
 
 
 # Configure logging
@@ -330,7 +348,7 @@ class KVCacheAgent:
     """
     
     def __init__(self, api_key: str, mode: KVCacheMode = KVCacheMode.CORRECT,
-                 model: str = "kimi-k3", root_dir: str = ".",
+                 model: str = "kimi-k2.6", root_dir: str = ".",
                  verbose: bool = True):
         """
         Initialize the agent
@@ -628,7 +646,7 @@ Always think step by step and use tools to gather information. When you have eno
                 "model": self.model,
                 "messages": messages,
                 "temperature": _reasoning_safe_temperature(self.model, 0.7),
-                "max_tokens": 2000
+                "max_tokens": _reasoning_safe_max_tokens(self.model, 2000)
             }
             
             # Add tools for all modes (TEXT_FORMAT still needs tools to work)
@@ -795,7 +813,7 @@ Always think step by step and use tools to gather information. When you have eno
 
 
 def compare_implementations(api_key: str, task: str, root_dir: str = ".",
-                            model: str = "kimi-k3") -> Dict[str, Any]:
+                            model: str = "kimi-k2.6") -> Dict[str, Any]:
     """
     Compare different KV cache implementations
 

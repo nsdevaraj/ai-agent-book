@@ -68,25 +68,29 @@ pip install -r requirements.txt
 
 ```bash
 python run_ablation.py \
-    --model openai/gpt-5 \
+    --model gpt-4o-mini \
     --env airline \
     --end-index 10 \
     --all
-# 说明：openai/gpt-5 会自动使用 openrouter provider；需要设置 OPENROUTER_API_KEY
+# 说明：默认使用 OpenAI 直连（provider=openai），需设置 OPENAI_API_KEY。
+#       如需走 OpenRouter，把模型写成带斜杠的 id（如 openai/gpt-5），
+#       脚本会自动选择 openrouter provider（需 OPENROUTER_API_KEY）。
 ```
 
-跑完后的对比表形如（示意，请以你自己的真实运行结果为准，不要引用这里的占位数字）：
+跑完后会打印如下成功率对比表。下面是一次**真实运行**的输出（`--model gpt-4o --env airline --end-index 4`，即每组仅 4 个任务的冒烟样本），仅用于展示表格形态：
 
 ```
 Experiment                        Success Rate      Tasks        Relative
 ----------------------------------------------------------------------
-baseline                          ...%          .../10     100.0%  ⭐
-tone_trump                        ...%          .../10      ...%
-tone_casual                       ...%          .../10      ...%
-wiki_random                       ...%          .../10      ...%
-no_tool_desc                      ...%          .../10      ...%
-all_ablations                     ...%          .../10      ...%
+wiki_random                      50.0%         2/  4      200.0%
+baseline                         25.0%         1/  4      100.0%  ⭐
+tone_trump                       25.0%         1/  4      100.0%
+tone_casual                      25.0%         1/  4      100.0%
+no_tool_desc                      0.0%         0/  4        0.0%
+all_ablations                     0.0%         0/  4        0.0%
 ```
+
+> ⚠️ 上表每组只有 4 个任务，样本量极小、噪声很大——例如 `wiki_random` 这一次偶然高于 `baseline`，这是小样本波动，并非真实结论。方向性信号（移除工具描述 → 0%、全部叠加 → 0%、语气对成功率无影响）与书中"实验 2-4"一致，但要得到稳定的量化结论（如"信息组织混乱导致成功率下降 30% 以上"），请把 `--end-index` 提高到 10 及以上并多跑几个 `--seed`。请以你自己的完整运行结果为准，不要直接引用这里的冒烟数字。
 
 ### 基础运行：单个配置 (Basic Run)
 
@@ -94,12 +98,12 @@ all_ablations                     ...%          .../10      ...%
 
 ```bash
 python run_ablation.py \
-    --model openai/gpt-5 \
+    --model gpt-4o-mini \
     --env airline \
     --task-split test \
     --start-index 0 \
     --end-index 10
-# Note: Provider will be automatically set to 'openrouter' for openai/gpt-5
+# Note: bare model ids (gpt-4o-mini) use OpenAI direct; ids with '/' auto-select openrouter
 ```
 
 ### 语气消融实验 (Tone Ablation)
@@ -107,7 +111,7 @@ python run_ablation.py \
 #### Trump 风格
 ```bash
 python run_ablation.py \
-    --model openai/gpt-5 \
+    --model gpt-4o-mini \
     --env airline \
     --tone-style trump \
     --ablation-name trump_tone
@@ -116,7 +120,7 @@ python run_ablation.py \
 #### 休闲风格
 ```bash
 python run_ablation.py \
-    --model openai/gpt-5 \
+    --model gpt-4o-mini \
     --env airline \
     --tone-style casual \
     --ablation-name casual_tone
@@ -126,7 +130,7 @@ python run_ablation.py \
 
 ```bash
 python run_ablation.py \
-    --model openai/gpt-5 \
+    --model gpt-4o-mini \
     --env airline \
     --randomize-wiki \
     --ablation-name wiki_random
@@ -136,7 +140,7 @@ python run_ablation.py \
 
 ```bash
 python run_ablation.py \
-    --model openai/gpt-5 \
+    --model gpt-4o-mini \
     --env airline \
     --remove-tool-descriptions \
     --ablation-name no_tool_desc
@@ -148,7 +152,7 @@ python run_ablation.py \
 
 ```bash
 python run_ablation.py \
-    --model openai/gpt-5 \
+    --model gpt-4o-mini \
     --env airline \
     --tone-style casual \
     --randomize-wiki \
@@ -167,7 +171,7 @@ python run_ablation.py \
 
 ```bash
 # 默认 10 个任务/实验；--quick 用 3 个任务快速冒烟
-./run_full_ablation.sh --model openai/gpt-5 --env airline --num-tasks 10
+./run_full_ablation.sh --model gpt-4o-mini --env airline --num-tasks 10
 ./run_full_ablation.sh --quick
 ```
 
@@ -236,8 +240,8 @@ python analyze_results.py --results-dir results_ablation --output summary.json
 | `--output` | （仅 --all）汇总统计 JSON 输出路径 | string |
 | `--ablation-name` | 实验名称标识 | string |
 | `--env` | 环境选择 | airline, retail |
-| `--model` | 使用的模型 | string (e.g., openai/gpt-5) |
-| `--model-provider` | 模型提供商（可选） | 自动检测（openai/gpt-5使用openrouter） |
+| `--model` | 使用的模型 | string (e.g., gpt-4o-mini, gpt-4o) |
+| `--model-provider` | 模型提供商（可选） | 自动检测（裸 id 用 openai，带 / 的 id 用 openrouter） |
 | `--task-split` | 任务集 | train, test, dev |
 | `--start-index` | 起始任务索引 | integer |
 | `--end-index` | 结束任务索引 | integer |

@@ -4,7 +4,9 @@ A comprehensive demonstration of KV (Key-Value) cache importance in LLMs using a
 
 ## 🎯 Overview
 
-This project implements a ReAct (Reasoning and Acting) agent that uses the Kimi K3 model to analyze code projects. The agent uses the standard OpenAI tool calling format (similar to week1/context) and demonstrates six different implementation patterns - one correct and five incorrect - showing how seemingly minor changes can invalidate KV cache and dramatically impact performance.
+This project implements a ReAct (Reasoning and Acting) agent that uses a current Moonshot Kimi model (default `kimi-k2.6`) to analyze code projects. The agent uses the standard OpenAI tool calling format and demonstrates six different implementation patterns - one correct and five incorrect - showing how seemingly minor changes can invalidate KV cache and dramatically impact performance.
+
+> **Model note.** On the live Moonshot endpoint the whole current Kimi family (`kimi-k2.5` / `kimi-k2.6` / `kimi-k2.7*` / `kimi-k3`) are *reasoning* models: they emit `reasoning_content` and only accept `temperature=1` (the code handles this automatically). They **do** report `cached_tokens`, which is exactly what this experiment measures. The legacy non-reasoning `moonshot-v1-*` chat models, by contrast, do **not** report `cached_tokens`, so they cannot demonstrate the cache effect. We default to `kimi-k2.6` because it reports cache hits like the rest of the family but has the lightest reasoning footprint, which keeps TTFT the least noisy. Because any reasoning model adds variable thinking latency, the **cache hit rate / cache ratio** columns (which are deterministic) are the robust signal here; treat TTFT as secondary.
 
 ### What is KV Cache?
 
@@ -92,7 +94,7 @@ The implementation ensures this by:
 
 ```bash
 # Navigate to the project directory
-cd projects/week2/kv-cache
+cd chapter2/kv-cache
 
 # Install dependencies
 pip install -r requirements.txt
@@ -137,7 +139,7 @@ The CLI ships Chinese `--help`; run `python main.py --help` for the full list. K
 | `--compare` | 依次运行全部策略并打印横向对比表（需要 API Key） |
 | `--report` | **离线**：从已保存的 `result_*.json` / `comparison_*.json` 生成对比表，**无需 API Key** |
 | `--input ...` | 配合 `--report` 指定结果文件 / 通配符 / 目录（默认扫描当前目录） |
-| `--model MODEL` | 选择模型（默认 `kimi-k3`） |
+| `--model MODEL` | 选择模型（默认 `kimi-k2.6`；同族 `kimi-k2.5` / `kimi-k3` 亦可，均会上报 `cached_tokens`） |
 | `--output PATH` | 指定结果 JSON 的输出路径（默认按模式 + 时间戳自动命名） |
 | `--cache-price-ratio R` | 成本估算中缓存 token 相对正常 token 的计费比例（默认 `0.1`，即一折），仅作示意 |
 | `--task`, `--root-dir` | 自定义任务 / 文件工具根目录 |
@@ -147,7 +149,7 @@ The CLI ships Chinese `--help`; run `python main.py --help` for the full list. K
 python main.py --mode correct
 
 # Pick a model and write to a named file
-python main.py --mode sliding_window --model kimi-k3 --output run.json
+python main.py --mode sliding_window --model kimi-k2.6 --output run.json
 
 # Run comparison across all modes (needs API key)
 python main.py --compare
@@ -220,15 +222,25 @@ python main.py --mode correct --root-dir ../.. --task "Analyze the project struc
 When comparing implementations, you should observe:
 
 1. **Correct Implementation**: 
-   - High cache hit rate (>90% after first iteration)
-   - Low TTFT after initial request
-   - Most prompt tokens cached
+   - Every iteration after the first reports cached tokens (the stable prefix is reused)
+   - Low, steady first-token latency
+   - The prefix (system prompt + tools + prior turns) is served from cache
 
 2. **Incorrect Implementations**:
-   - Low or zero cache hit rates
-   - Consistently high TTFT
-   - Minimal or no cached tokens
-   - 2-5x slower than correct implementation
+   - A collapsing **cache ratio** — e.g. shuffling the tool list drops the share of
+     prompt tokens served from cache to roughly a third of the correct run
+   - Consistently higher TTFT (reformatting history as text or shuffling tools
+     more than doubles first-token latency in the measured run)
+   - Longer total time (up to ~2.4x the correct run for `text_format`)
+
+> **On a reasoning model** (the whole current Kimi family reasons) TTFT carries
+> extra variance from hidden thinking tokens, so the **cache ratio** column is the
+> cleanest evidence of the effect. Note also that appending dynamic data at the
+> *end* of an otherwise-stable prefix (as `dynamic_system` / `dynamic_profile` do)
+> only invalidates the cache *from that point on* — the base prefix before it still
+> caches — so their headline cache ratio can look close to `correct` while their
+> **total time still regresses**. The lesson: keep dynamic data out of the prefix
+> entirely.
 
 ## 🔍 Example Output
 
@@ -251,21 +263,35 @@ When comparing implementations, you should observe:
 
 ### Comparison Table (`--report` on the saved result files in this directory)
 
-These are the actual measured numbers from the committed `result_*.json` files (three
-strategies were captured; run `--compare` to generate all six under one task):
+These are the **actual measured numbers** from a single `--compare` run — all six
+strategies under one task (`kimi-k2.6`, root dir = this folder, task = "find all
+Python files, read `main.py` + `agent.py`, summarize in 3 sentences"), then read
+back with `python main.py --report`:
 
 ```
 Mode             Iters  1st TTFT   Avg TTFT   Total(s)   Prompt    Cached    Hit%    Cache%   Bill.Tok   Save%
 ----------------------------------------------------------------------------------------------------------------
-correct          1      4.438      4.438      4.438      501       501       100.0   100.0    50         90.0
-sliding_window   4      3.602      2.793      8.478      3,139     1,525     100.0   48.6     1,766      43.7
-text_format      5      6.355      6.695      33.658     11,247    7,669     100.0   68.2     4,345      61.4
+correct          3      2.328      6.054      18.163     7,567     768       100.0   10.1     6,876      9.1
+dynamic_profile  3      2.206      5.986      17.962     7,652     768       100.0   10.0     6,961      9.0
+dynamic_system   3      2.497      8.085      24.260     7,639     768       100.0   10.1     6,948      9.0
+shuffled_tools   3      7.818      11.122     33.369     7,568     256       100.0   3.4      7,338      3.0
+sliding_window   5      2.234      3.649      14.704     2,224     1,510     100.0   67.9     865        61.1
+text_format      3      6.189      14.432     43.297     7,430     674       100.0   9.1      6,823      8.2
 ```
 
-`Cache%` is the share of prompt tokens served from cache; `Bill.Tok`/`Save%` assume cached
-tokens bill at `--cache-price-ratio` (default 0.1) of a normal token — an illustration, not
-a provider quote. Note these three rows came from separate runs/tasks, so absolute values are
-only strictly comparable within a single `--compare` run.
+Reading the table: `shuffled_tools` reorders the tool definitions that sit near the
+front of the prefix, so its **cache ratio collapses from 10.1% to 3.4%** and its
+first-token latency jumps from ~2.3s to ~7.8s. `text_format` rebuilds history as one
+plain-text blob every turn, roughly **2.4x the correct total time**. `sliding_window`
+shows a high cache ratio only because truncation shrinks the prompt itself (fewer,
+mostly-cached tokens) — a reminder that a high ratio on a tiny prompt is not the same
+as an efficient run.
+
+`Cache%` is the share of prompt tokens served from cache; `Hit%` is the share of
+*iterations* that saw any cache. `Bill.Tok`/`Save%` assume cached tokens bill at
+`--cache-price-ratio` (default 0.1) of a normal token — an illustration, not a
+provider quote. All six rows come from one `--compare` run, so they are directly
+comparable; regenerate with `python main.py --compare` to reproduce.
 
 ## 💡 Key Insights
 
@@ -351,7 +377,9 @@ Based on this demonstration, follow these practices:
 - Ensure stable network connection
 
 ### Zero Cache Hits
-- Confirm using Kimi K3 model (supports caching)
+- Confirm using a current Kimi model (`kimi-k2.5` / `kimi-k2.6` / `kimi-k3`) — these
+  report `cached_tokens`. The non-reasoning `moonshot-v1-*` models do **not** report
+  cached tokens, so this metric will read 0 even when caching happens server-side.
 - Check if context is actually stable
 - Review logs for cache invalidation patterns
 

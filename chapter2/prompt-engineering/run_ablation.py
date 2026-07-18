@@ -39,7 +39,7 @@ def parse_args():
         epilog=(
             "示例：\n"
             "  # 基线（结构化提示词 + 完整工具描述 + 专业中立语气），跑前 10 个任务\n"
-            "  python run_ablation.py --model openai/gpt-5 --env airline --end-index 10\n\n"
+            "  python run_ablation.py --model gpt-4o-mini --env airline --end-index 10\n\n"
             "  # 单个消融：打乱 wiki 规则的组织结构\n"
             "  python run_ablation.py --env airline --randomize-wiki --end-index 10\n\n"
             "  # 一键跑完整套消融并打印对比表（基线 + 各维度 + 全部叠加）\n"
@@ -60,28 +60,28 @@ def parse_args():
     parser.add_argument(
         "--model",
         type=str,
-        default="openai/gpt-5",
-        help="The model to use for the agent (default: openai/gpt-5)",
+        default="gpt-4o-mini",
+        help="The model to use for the agent (default: gpt-4o-mini, via OpenAI direct)",
     )
     parser.add_argument(
         "--model-provider",
         type=str,
         choices=provider_list,
         default=None,  # Will be set based on model
-        help="The model provider for the agent (default: openrouter for openai/gpt-5)",
+        help="The model provider for the agent (default: openai; a model id containing '/' auto-selects openrouter)",
     )
     parser.add_argument(
         "--user-model",
         type=str,
-        default="openai/gpt-5",
-        help="The model to use for the user simulator (default: openai/gpt-5)",
+        default="gpt-4o-mini",
+        help="The model to use for the user simulator (default: gpt-4o-mini, via OpenAI direct)",
     )
     parser.add_argument(
         "--user-model-provider",
         type=str,
         choices=provider_list,
         default=None,  # Will be set based on model
-        help="The model provider for the user simulator (default: openrouter for openai/gpt-5)",
+        help="The model provider for the user simulator (default: openai; a model id containing '/' auto-selects openrouter)",
     )
     parser.add_argument(
         "--agent-strategy",
@@ -169,19 +169,16 @@ def parse_args():
     # Set verbose flag (defaults to True unless --no-verbose is used)
     args.verbose = not args.no_verbose
     
-    # Set default provider based on model if not specified
+    # Set default provider based on model if not specified.
+    # A model id containing "/" (e.g. "openai/gpt-5") is an OpenRouter-style id and
+    # routes through openrouter (requires a valid OPENROUTER_API_KEY); a bare id
+    # (e.g. "gpt-4o-mini") routes through OpenAI direct (requires OPENAI_API_KEY).
     if args.model_provider is None:
-        if args.model == "openai/gpt-5":
-            args.model_provider = "openrouter"
-        else:
-            args.model_provider = "openai"
-    
+        args.model_provider = "openrouter" if "/" in args.model else "openai"
+
     # Set default user model provider based on user model if not specified
     if args.user_model_provider is None:
-        if args.user_model == "openai/gpt-5":
-            args.user_model_provider = "openrouter"
-        else:
-            args.user_model_provider = "openai"
+        args.user_model_provider = "openrouter" if "/" in args.user_model else "openai"
     
     return args
 
@@ -418,7 +415,12 @@ def run_full_suite(args):
         args.tone_style = mods["tone_style"]
         args.randomize_wiki = mods["randomize_wiki"]
         args.remove_tool_descriptions = mods["remove_tool_descriptions"]
-        args.ablation_name = name
+        # Leave ablation_name empty: run_with_ablation already derives a descriptive
+        # suffix from the active flags (e.g. "tone_trump", "no_tool_desc"). Setting it
+        # to `name` here would double the suffix in the checkpoint filename
+        # (e.g. "no_tool_desc_no_tool_desc"). The comparison table is keyed by `name`
+        # from ABLATION_SUITE below, independent of the filename.
+        args.ablation_name = ""
 
         print("\n" + "=" * 80)
         print(f"▶️  Running experiment: {name}")

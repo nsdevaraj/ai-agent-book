@@ -1,5 +1,24 @@
 # System-Hint Agent Changelog
 
+## 2026-07-18 - kimi-k3 (reasoning model) + offline status-bar preview
+
+### Changes Made
+
+- **Default model is now `kimi-k3`** (Moonshot's current flagship reasoning model),
+  replacing the retired `kimi-k2-*-preview` line. `provider="kimi"`/`"moonshot"`
+  both resolve to `kimi-k3` unless `--model` overrides it.
+- **Reasoning-model handling**: `kimi-k3` returns a separate `reasoning_content`
+  field alongside the final `content`. The agent reads the answer from `content`
+  (FINAL ANSWER detection unchanged), calls with `max_tokens=8192` (well above the
+  reasoning minimum of 2048), and forces `temperature=1` for reasoning models via
+  `_reasoning_safe_temperature()` (kimi-k3 / gpt-5). Assistant turns are replayed
+  with `model_dump()` (which includes `reasoning_content`); the Moonshot API accepts
+  this on follow-up calls, so multi-turn tool loops work unchanged.
+- **Offline status-bar preview** (`python main.py --mode preview`): renders all five
+  status-bar techniques as before/after comparisons with **no API key and no LLM
+  call**. Honors `--no-timestamps` / `--no-counter` / `--no-todo` / `--no-errors`
+  / `--no-state` to isolate individual techniques.
+
 ## 2025-09-30 - Trajectory Logging Enhancement
 
 ### Changes Made
