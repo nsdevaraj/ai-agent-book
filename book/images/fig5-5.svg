@@ -28,8 +28,8 @@
 <text x="528" y="238" font-family="'Courier New', Courier, monospace" font-size="10" fill="#333333" text-anchor="start" dominant-baseline="central">  ✓ Text overflow boundary</text>
 <text x="528" y="254" font-family="'Courier New', Courier, monospace" font-size="10" fill="#333333" text-anchor="start" dominant-baseline="central">  ✓ Layout too crowded</text>
 <text x="528" y="270" font-family="'Courier New', Courier, monospace" font-size="10" fill="#333333" text-anchor="start" dominant-baseline="central">  ✓ Image size appropriate</text>
-<text x="528" y="286" font-family="'Courier New', Courier, monospace" font-size="10" fill="#333333" text-anchor="start" dominant-baseline="central">  ✗ Slide 3: Too much content, suggest splitting</text>
-<text x="528" y="302" font-family="'Courier New', Courier, monospace" font-size="10" fill="#333333" text-anchor="start" dominant-baseline="central">  ✗ Slide 7: Font too small, increase to 14pt</text>
+<text x="528" y="286" font-family="'Courier New', Courier, monospace" font-size="10" fill="#333333" text-anchor="start" dominant-baseline="central">  ✗ Slide 3: Text overflows right column</text>
+<text x="528" y="302" font-family="'Courier New', Courier, monospace" font-size="10" fill="#333333" text-anchor="start" dominant-baseline="central">  ✗ Slide 7: Content too dense</text>
 <line x1="370" y1="200" x2="508" y2="150" stroke="#333333" stroke-width="2" marker-end="url(#ah)"/>
 <text x="439.0" y="165.0" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#666666" text-anchor="middle">Slidev code</text>
 <line x1="508" y1="300" x2="370" y2="260" stroke="#333333" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#ah)"/>
@@ -39,15 +39,15 @@
 <line x1="30" y1="365" x2="850" y2="365" stroke="#999999" stroke-width="2" stroke-dasharray="8,4"/>
 <text x="440.0" y="388" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">Why separate Proposer and Reviewer?</text>
 <rect x="30" y="405" width="270" height="130" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
-<text x="165" y="425" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">Single Agent issues</text>
-<text x="165" y="450" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Tens of pages of rendered screenshots → context bloat</text>
-<text x="165" y="474" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Code + screenshot mix → attention dispersion</text>
+<text x="165" y="425" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">Single Agent Problem</text>
+<text x="165" y="450" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="10.5" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Tens of pages of rendered screenshots → context bloat</text>
+<text x="165" y="474" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12.5" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Code + screenshot mix → attention dispersion</text>
 <rect x="320" y="405" width="270" height="130" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
-<text x="455" y="425" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">Advantages of separation</text>
-<text x="455" y="450" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Reviewer independent context → only screenshots + code</text>
-<text x="455" y="474" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Proposer focuses on code → only receives modification suggestions</text>
+<text x="455" y="425" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">Advantages of Separation</text>
+<text x="455" y="450" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="10" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Reviewer independent context → only screenshots + code</text>
+<text x="455" y="474" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="8.5" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Proposer focuses on code → only receives modification suggestions</text>
 <rect x="610" y="405" width="270" height="130" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
-<text x="745" y="425" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">Actual effect</text>
+<text x="745" y="425" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">Actual Effect</text>
 <text x="745" y="450" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Significantly reduces context usage</text>
 <text x="745" y="474" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">Fix accuracy improves significantly</text>
 </svg>

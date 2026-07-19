@@ -6,7 +6,7 @@
 <rect x="255" y="95" width="130" height="50" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
 <text x="320.0" y="120.0" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="normal">Storage Room</text>
 <rect x="255" y="255" width="130" height="50" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
-<text x="320.0" y="280.0" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="normal">Northern Corridor</text>
+<text x="320.0" y="280.0" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15.5" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="normal">Northern Corridor</text>
 <rect x="475" y="175" width="130" height="50" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
 <text x="540.0" y="200.0" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="normal">Guard Room</text>
 <rect x="635" y="175" width="130" height="50" rx="6" fill="#d0d0d0" stroke="#333333" stroke-width="2"/>

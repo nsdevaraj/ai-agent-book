@@ -770,25 +770,25 @@
 <text x="117.5" y="150" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">binary reward</text>
 <line x1="30" y1="162" x2="205" y2="162" stroke="#999999" stroke-width="2"/>
 <text x="30" y="182" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">GAIA: exact match → 0 / 1</text>
-<text x="30" y="204" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">SWE-Bench: test pass → 0 / 1</text>
-<text x="30" y="226" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">credit assignment difficulty: in 10 steps</text>
+<text x="30" y="204" font-family="'Courier New', Courier, monospace" font-size="10.5" fill="#333333" text-anchor="start" dominant-baseline="central">SWE-Bench: test pass → 0 / 1</text>
+<text x="30" y="226" font-family="'Courier New', Courier, monospace" font-size="7.5" fill="#333333" text-anchor="start" dominant-baseline="central">credit assignment difficulty: in 10 steps</text>
 <text x="30" y="248" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">which step caused failure?</text>
 <line x1="310.8" y1="65" x2="310.8" y2="95" stroke="#333333" stroke-width="2"/>
 <line x1="310.8" y1="95" x2="310.8" y2="128" stroke="#333333" stroke-width="2" marker-end="url(#ah)"/>
 <rect x="213.3" y="130" width="195" height="140" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
 <text x="310.8" y="150" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">milestone reward</text>
 <line x1="223.3" y1="162" x2="398.3" y2="162" stroke="#999999" stroke-width="2"/>
-<text x="223.3" y="182" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">τ²-bench multi-dimensional verification:</text>
+<text x="223.3" y="182" font-family="'Courier New', Courier, monospace" font-size="7.5" fill="#333333" text-anchor="start" dominant-baseline="central">τ²-bench multi-dimensional verification:</text>
 <text x="223.3" y="204" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">  DB status ✓ (+0.4)</text>
-<text x="223.3" y="226" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">  keyword confirmation ✓ (+0.3)</text>
-<text x="223.3" y="248" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">  process compliance ✓ (+0.3)</text>
+<text x="223.3" y="226" font-family="'Courier New', Courier, monospace" font-size="9.5" fill="#333333" text-anchor="start" dominant-baseline="central">  keyword confirmation ✓ (+0.3)</text>
+<text x="223.3" y="248" font-family="'Courier New', Courier, monospace" font-size="10.5" fill="#333333" text-anchor="start" dominant-baseline="central">  process compliance ✓ (+0.3)</text>
 <line x1="531.2" y1="65" x2="531.2" y2="95" stroke="#333333" stroke-width="2"/>
 <line x1="531.2" y1="95" x2="531.2" y2="128" stroke="#333333" stroke-width="2" marker-end="url(#ah)"/>
 <rect x="433.70000000000005" y="130" width="195" height="140" rx="6" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
 <text x="531.2" y="150" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">process reward</text>
 <line x1="443.70000000000005" y1="162" x2="618.7" y2="162" stroke="#999999" stroke-width="2"/>
-<text x="443.70000000000005" y="182" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">immediate feedback per step:</text>
-<text x="443.70000000000005" y="204" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">  identity verification → +0.1</text>
+<text x="443.70000000000005" y="182" font-family="'Courier New', Courier, monospace" font-size="10.5" fill="#333333" text-anchor="start" dominant-baseline="central">immediate feedback per step:</text>
+<text x="443.70000000000005" y="204" font-family="'Courier New', Courier, monospace" font-size="10" fill="#333333" text-anchor="start" dominant-baseline="central">  identity verification → +0.1</text>
 <text x="443.70000000000005" y="226" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">  query information → +0.1</text>
 <text x="443.70000000000005" y="248" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">  user confirmation → +0.2</text>
 <line x1="744.0" y1="65" x2="744.0" y2="95" stroke="#333333" stroke-width="2"/>
@@ -802,8 +802,8 @@
 <text x="656.5" y="248" font-family="'Courier New', Courier, monospace" font-size="11" fill="#333333" text-anchor="start" dominant-baseline="central">  final state → +0.5</text>
 <rect x="100" y="290" width="680" height="50" rx="4" fill="#f5f5f5" stroke="#999999" stroke-width="2"/>
 <text x="115" y="308" font-family="'Courier New', Courier, monospace" font-size="16" fill="#333333" text-anchor="start" dominant-baseline="central">Pine AI case: binary reward requires 100 trials to succeed by chance</text>
-<text x="115" y="328" font-family="'Courier New', Courier, monospace" font-size="16" fill="#333333" text-anchor="start" dominant-baseline="central">root cause: model-free RL only sees reward=0, cannot learn from observation</text>
+<text x="115" y="328" font-family="'Courier New', Courier, monospace" font-size="14.5" fill="#333333" text-anchor="start" dominant-baseline="central">root cause: model-free RL only sees reward=0, cannot learn from observation</text>
 <rect x="100" y="355" width="680" height="50" rx="6" fill="#d0d0d0" stroke="#333333" stroke-width="2"/>
-<text x="440.0" y="373" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">trade-off: dense reward is easier to learn, but annotation cost is high and may over-constrain innovation</text>
+<text x="440.0" y="373" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#333333" text-anchor="middle" dominant-baseline="central" font-weight="bold">trade-off: dense reward is easier to learn, but annotation cost is high and may over-constrain innovation</text>
 <text x="440.0" y="393" font-family="Arial, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666" text-anchor="middle" dominant-baseline="central" font-weight="normal">practice: process reward and outcome reward used together</text>
 </svg>
