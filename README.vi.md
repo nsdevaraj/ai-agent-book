@@ -858,10 +858,10 @@ Dự án này được mở nguồn theo [Apache License 2.0](LICENSE); xem chi 
 
 <a href="https://star-history.com/#bojieli/ai-agent-book&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bojieli/ai-agent-book/star-history/assets/my-star-history/star-history-dark.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bojieli/ai-agent-book/star-history/assets/my-star-history/star-history-light.svg" />
-    <img alt="Star History Chart" src="https://raw.githubusercontent.com/bojieli/ai-agent-book/star-history/assets/my-star-history/star-history-light.svg" width="720" />
+    <source media="(prefers-color-scheme: dark)" srcset="assets/star-history-dark.png" />
+    <source media="(prefers-color-scheme: light)" srcset="assets/star-history-light.png" />
+    <img alt="Star History Chart" src="assets/star-history-light.png" width="720" />
   </picture>
 </a>
 
-<sub>Biểu đồ được [GitHub Actions scheduled workflow](.github/workflows/star-history.yml) tự động tạo theo phong cách star-history mỗi tuần và commit vào nhánh <code>star-history</code>; được host cục bộ nên không bị giới hạn tốc độ từ bên ngoài. Nhấp vào biểu đồ để xem dữ liệu thời gian thực trên star-history.com.</sub>
+<sub>Biểu đồ được vẽ bởi [`scripts/gen_star_history.py`](scripts/gen_star_history.py) (bắt đầu từ ngày 15 tháng 7 năm 2026), được [tác vụ theo lịch của GitHub Actions](.github/workflows/star-history.yml) tự động cập nhật mỗi ngày và commit vào thư mục <code>assets/</code>; nhấp vào biểu đồ để xem dữ liệu thời gian thực trên star-history.com.</sub>
