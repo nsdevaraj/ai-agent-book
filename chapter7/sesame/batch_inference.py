@@ -101,9 +101,11 @@ def generate_speech_batch(
         print(f"Loaded {len(raw_ds)} examples from dataset")
     
     for item in tqdm(texts, desc="Generating speech"):
-        text = item["text"]
+        text = item.get("text")
+        if not text:
+            raise ValueError(f"Each item must have a non-empty 'text' field, got: {item}")
         speaker_id = item.get("speaker_id", 0)
-        output_name = item.get("output", f"output_{hash(text)}.wav")
+        output_name = item.get("output") or f"output_{hash(text)}.wav"
         output_file = output_path / output_name
         
         # Check if dataset context is provided
