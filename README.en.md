@@ -13,6 +13,8 @@ The book is available in multiple languages:
 - **Tamil PDF** (community-contributed translation by [@nsdevaraj](https://github.com/nsdevaraj)): [`book-ta/AI-Agents-in-Depth-Bojie-Li-v1.2-ta.pdf`](book-ta/AI-Agents-in-Depth-Bojie-Li-v1.2-ta.pdf)
 - **Vietnamese PDF** (community-contributed translation by [@toanalien](https://github.com/toanalien)): [`book-vi/AI-Agents-in-Depth-Bojie-Li-v1.2-vi.pdf`](book-vi/AI-Agents-in-Depth-Bojie-Li-v1.2-vi.pdf)
 
+The shared builder produces EPUB 3 editions for Chinese, English, Tamil, and Vietnamese. See the [EPUB build instructions](EPUB.md).
+
 The Chinese original lives in [`book/`](book/). The English, Tamil, and Vietnamese translations are **community-contributed** and live in [`book-en/`](book-en/), [`book-ta/`](book-ta/), and [`book-vi/`](book-vi/) respectively; they may lag behind the Chinese original:
 
 - **Source text (English)**: `book-en/introduction.md` (Introduction), `book-en/chapter1.md` ~ `book-en/chapter10.md` (Chapters 1–10), `book-en/afterword.md` (Afterword)

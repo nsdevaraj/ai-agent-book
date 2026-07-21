@@ -10,6 +10,8 @@ Mã nguồn của bản dịch tiếng Việt (do [@toanalien](https://github.co
 gốc tiếng Trung ở [`book/`](book/), bản tiếng Anh ở [`book-en/`](book-en/) và
 bản Tamil ở [`book-ta/`](book-ta/).
 
+Trình dựng chung tạo sách EPUB 3 cho tiếng Trung, tiếng Anh, tiếng Tamil và tiếng Việt. Xem [hướng dẫn dựng EPUB](EPUB.md).
+
 - **Mã nguồn tiếng Việt**: `book-vi/introduction.vi.md` (lời mở đầu),
   `book-vi/chapter1.vi.md` ~ `book-vi/chapter10.vi.md` (chương 1 đến chương 10),
   `book-vi/afterword.vi.md` (lời bạt)

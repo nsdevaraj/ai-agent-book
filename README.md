@@ -13,6 +13,8 @@
 - **泰米尔语 PDF**（社区贡献翻译，by [@nsdevaraj](https://github.com/nsdevaraj)）：[`book-ta/AI-Agents-in-Depth-Bojie-Li-v1.2-ta.pdf`](book-ta/AI-Agents-in-Depth-Bojie-Li-v1.2-ta.pdf)
 - **越南语 PDF**（社区贡献翻译，by [@toanalien](https://github.com/toanalien)）：[`book-vi/AI-Agents-in-Depth-Bojie-Li-v1.2-vi.pdf`](book-vi/AI-Agents-in-Depth-Bojie-Li-v1.2-vi.pdf)
 
+可使用统一的构建脚本生成中文、英文、泰米尔语和越南语 EPUB 3 电子书。请参阅 [EPUB 构建说明](EPUB.md)。
+
 中文正文与编译好的 PDF 位于 [`book/`](book/) 目录；英文、泰米尔语与越南语翻译为**社区贡献**，分别位于 [`book-en/`](book-en/)、[`book-ta/`](book-ta/) 与 [`book-vi/`](book-vi/) 目录，内容可能滞后于中文原版：
 
 - **正文源码**：`book/introduction.md`（引言）、`book/chapter1.md` ~ `book/chapter10.md`（第一至第十章）、`book/afterword.md`（后记）

@@ -8,6 +8,7 @@ results/
 !.gitignore
 !.env.example
 *.log
+*.epub
 out/
 output/
 user-memory/data/

@@ -13,6 +13,8 @@
 - **தமிழ் PDF** (சமூகப் பங்களிப்பு மொழிபெயர்ப்பு, by [@nsdevaraj](https://github.com/nsdevaraj)): [`book-ta/AI-Agents-in-Depth-Bojie-Li-v1.2-ta.pdf`](book-ta/AI-Agents-in-Depth-Bojie-Li-v1.2-ta.pdf)
 - **வியட்நாமிய PDF** (சமூகப் பங்களிப்பு மொழிபெயர்ப்பு, by [@toanalien](https://github.com/toanalien)): [`book-vi/AI-Agents-in-Depth-Bojie-Li-v1.2-vi.pdf`](book-vi/AI-Agents-in-Depth-Bojie-Li-v1.2-vi.pdf)
 
+ஒரே உருவாக்க நிரல் சீனம், ஆங்கிலம், தமிழ் மற்றும் வியட்நாமியம் ஆகிய மொழிகளுக்கான EPUB 3 பதிப்புகளை உருவாக்குகிறது. [EPUB உருவாக்க வழிமுறைகளைப்](EPUB.md) பார்க்கவும்.
+
 சீன மூல உரை மற்றும் தொகுக்கப்பட்ட PDF [`book/`](book/) கோப்பகத்தில் உள்ளது; ஆங்கில, தமிழ் மற்றும் வியட்நாமிய மொழிபெயர்ப்புகள் **சமூகப் பங்களிப்புகள்** ஆகும் — அவை முறையே [`book-en/`](book-en/), [`book-ta/`](book-ta/) மற்றும் [`book-vi/`](book-vi/) கோப்பகங்களில் உள்ளன, மேலும் அவற்றின் உள்ளடக்கம் சீன அசல் பதிப்பை விடப் பின்தங்கியிருக்கலாம்:
 
 - **மூல உரைக் குறியீடு**: `book/introduction.md` (அறிமுகம்), `book/chapter1.md` ~ `book/chapter10.md` (அத்தியாயங்கள் 1 முதல் 10 வரை), `book/afterword.md` (பின்னுரை)
