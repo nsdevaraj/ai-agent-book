@@ -28,6 +28,24 @@ def toc_item(identifier, href, label):
     return item
 
 
+def strip_section_numbers(element, namespace):
+    """递归删除所有 class=section-header-number 的子元素（连内容一起删）。
+    这样目录里只显示章节标题文字，不带 1.1 / 1.1.1 这种编号。"""
+    for span in list(element.iter(f"{{{namespace}}}span")):
+        classes = (span.get("class") or "").split()
+        if "section-header-number" in classes:
+            # 把 span 从父节点里移除（连同它的文本）
+            parent = span.getparent() if hasattr(span, "getparent") else None
+            if parent is None:
+                # ElementTree 没有 getparent，用遍历找
+                for parent in element.iter():
+                    if span in list(parent):
+                        parent.remove(span)
+                        break
+            else:
+                parent.remove(span)
+
+
 def flatten_nav(data, title_label, toc_label):
     root = ET.fromstring(data)
     nav = next(
@@ -36,8 +54,26 @@ def flatten_nav(data, title_label, toc_label):
         if element.get(f"{{{EPUB}}}type") == "toc"
     )
     top_list = next(child for child in nav if child.tag == f"{{{XHTML}}}ol")
+    # 正文目录页保留扉页、目录两个条目（这里不动）。
     top_list.insert(0, toc_item("toc-li-contents", "nav.xhtml#toc", toc_label))
     top_list.insert(0, toc_item("toc-li-title-page", "text/title_page.xhtml", title_label))
+
+    # 先删掉所有 section-header-number（让目录只显示标题文字，不带 1.1 / 1.1.1 编号）
+    # 关键：pandoc 把编号放在 <span class="section-header-number">1.1</span> 里，
+    # 标题文字在 span.tail（span 之后的文本节点）。直接 remove(span) 会把 tail 也丢掉，
+    # 导致 a 标签变空。所以要先保留 tail 文本。
+    for a in root.iter(f"{{{XHTML}}}a"):
+        for span in list(a):
+            classes = (span.get("class") or "").split()
+            if "section-header-number" in classes:
+                # 保留 span 后的文本（标题正文）到 a 的 text
+                tail_text = (span.tail or "").lstrip()
+                if tail_text:
+                    if a.text:
+                        a.text = a.text + tail_text
+                    else:
+                        a.text = tail_text
+                a.remove(span)
 
     for group in direct_children(top_list, f"{{{XHTML}}}li"):
         classes = group.get("class", "").split()
@@ -45,22 +81,15 @@ def flatten_nav(data, title_label, toc_label):
             classes.append("chapter-group")
         group.set("class", " ".join(classes))
 
-        nested_lists = direct_children(group, f"{{{XHTML}}}ol")
-        if not nested_lists:
-            continue
-
-        descendants = []
-        for nested_list in nested_lists:
-            descendants.extend(nested_list.iter(f"{{{XHTML}}}li"))
-            group.remove(nested_list)
-
-        flat_list = ET.Element(f"{{{XHTML}}}ol", {"class": "toc"})
-        for descendant in descendants:
-            flat_item = copy.deepcopy(descendant)
-            for child in direct_children(flat_item, f"{{{XHTML}}}ol"):
-                flat_item.remove(child)
-            flat_list.append(flat_item)
-        group.append(flat_list)
+        # 保留 pandoc 原始的 H2→H3→H4 嵌套结构。
+        # 侧边栏靠缩进显示层级。
+        for nested_list in direct_children(group, f"{{{XHTML}}}ol"):
+            nested_list.set("class", "toc subsections")
+            for sub_li in direct_children(nested_list, f"{{{XHTML}}}li"):
+                sub_classes = sub_li.get("class", "").split()
+                if "subsection" not in sub_classes:
+                    sub_classes.append("subsection")
+                    sub_li.set("class", " ".join(sub_classes))
 
     return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
@@ -70,41 +99,44 @@ def flatten_ncx(data, title_label, toc_label):
     root = ET.fromstring(data)
     nav_map = root.find(f"{{{NCX}}}navMap")
 
+    # Apple Books 侧边栏读 toc.ncx（即使 EPUB3 也会回退到 ncx）。
+    # 保留 pandoc 完整嵌套层级 + 删掉编号前缀（让侧边栏只显示标题文字）。
+
+    # 1. 找到/补上「扉页」入口
     title_point = None
     for point in direct_children(nav_map, f"{{{NCX}}}navPoint"):
         content = point.find(f"{{{NCX}}}content")
         if content is not None and content.get("src") == "text/title_page.xhtml":
             title_point = point
             label = point.find(f"{{{NCX}}}navLabel/{{{NCX}}}text")
-            label.text = title_label
+            if label is not None:
+                label.text = title_label
             break
 
-    contents_point = ET.Element(f"{{{NCX}}}navPoint", {"id": "navPoint-contents"})
-    contents_label = ET.SubElement(contents_point, f"{{{NCX}}}navLabel")
-    ET.SubElement(contents_label, f"{{{NCX}}}text").text = toc_label
-    ET.SubElement(contents_point, f"{{{NCX}}}content", {"src": "nav.xhtml#toc"})
-    insertion_index = list(nav_map).index(title_point) + 1 if title_point is not None else 0
-    nav_map.insert(insertion_index, contents_point)
+    # 2. 删掉每个 navLabel 里的编号前缀（如 "1.1 现代 Agent" → "现代 Agent"）
+    import re as _re
+    for label_text in root.iter(f"{{{NCX}}}text"):
+        if label_text.text:
+            # 去掉开头的 "1.1.1 " 或 "1.1 " 或 "1 " 这种编号
+            label_text.text = _re.sub(r'^\d+(\.\d+)*\s+', '', label_text.text)
 
-    for group in direct_children(nav_map, f"{{{NCX}}}navPoint"):
-        children = direct_children(group, f"{{{NCX}}}navPoint")
-        if not children:
-            continue
+    # 3. 保留 pandoc 完整嵌套（不删任何 navPoint）
 
-        descendants = []
-        for child in children:
-            descendants.extend(child.iter(f"{{{NCX}}}navPoint"))
-            group.remove(child)
-
-        for descendant in descendants:
-            flat_point = copy.deepcopy(descendant)
-            for child in direct_children(flat_point, f"{{{NCX}}}navPoint"):
-                flat_point.remove(child)
-            group.append(flat_point)
+    # 4. 给每个 navPoint 补 playOrder（按深度优先顺序递增）。
+    # NCX 规范要求 playOrder；pandoc 默认会加，但删除/重排 navPoint 后可能丢失。
+    # 缺 playOrder 时部分阅读器（如 Apple Books）会把嵌套层级拍平显示。
+    counter = [0]
+    def assign_play_order(point):
+        counter[0] += 1
+        point.set("playOrder", str(counter[0]))
+        for child in direct_children(point, f"{{{NCX}}}navPoint"):
+            assign_play_order(child)
+    for point in direct_children(nav_map, f"{{{NCX}}}navPoint"):
+        assign_play_order(point)
 
     depth = root.find(f".//{{{NCX}}}meta[@name='dtb:depth']")
     if depth is not None:
-        depth.set("content", "2")
+        depth.set("content", "3")
 
     return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 

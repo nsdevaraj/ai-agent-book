@@ -109,6 +109,7 @@ build_edition() {
             --number-sections \
             --mathml \
             --split-level=1 \
+            --highlight-style=kate \
             --css="$ROOT/epub.css" \
             --epub-cover-image="$cover" \
             --metadata title="$title" \
