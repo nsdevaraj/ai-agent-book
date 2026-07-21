@@ -1,5 +1,5 @@
 {#-
-  Override: inject language switcher tabs into the header bar,
+  Override: inject language switcher dropdown into the header bar,
   between search and the repo source link.
 -#}
 {% set class = "md-header" %}
@@ -57,12 +57,12 @@
       {% endif %}
     {% endif %}
 
-    {# ── Language switcher tabs (between search & source) ── #}
-    <div class="lang-tabs-wrap" id="lang-tabs-root"
-         role="tablist" aria-label="Language"></div>
+    {# ── Language selector dropdown (between search & source) ── #}
+    <select id="lang-selector"
+            class="lang-select"
+            aria-label="Switch language"></select>
 
-    {# Expose language config to the switcher script (extra.* is not in
-       window.__config, so we inject it here). #}
+    {# Expose language config to the switcher script. #}
     <script>window.LANG_CONFIG = {{ config.extra.languages | tojson }};</script>
 
     {% if config.repo_url %}

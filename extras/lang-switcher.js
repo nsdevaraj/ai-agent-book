@@ -1,54 +1,59 @@
-// Language switcher: populates header-bar tab buttons, rewrites URLs across
-// editions, and updates the left sidebar navigation links to follow.
+// Language switcher: populates a <select> dropdown in the header bar.
+// Selecting an option navigates to the same page in that edition and
+// rewrites all sidebar navigation links to match.
 //
-// URL mapping rules (from mkdocs.yml → extra.languages):
-//   zh: book/chapter1.md        (default, no suffix)
-//   en: book-en/chapter1.md
-//   ta: book-ta/chapter1.ta.md  (.ta suffix before .md)
-//   vi: book-vi/chapter1.vi.md  (.vi suffix before .md)
+// Config injected by header template: window.LANG_CONFIG = {
+//   zh:   { label: "中文",     prefix: "book/",          default: true },
+//   zhtw: { label: "繁體中文",  prefix: "book-zhtw/",      suffix: ".zhtw" },
+//   en:   { label: "English",  prefix: "-book-en/" },
+//   ta:   { label: "தமிழ்",    prefix: "book-ta/",        suffix: ".ta" },
+//   vi:   { label: "Tiếng Việt", prefix: "book-vi/",       suffix: ".vi" }
+// };
 
 (function () {
   "use strict";
 
-  var cfg = window.LANG_CONFIG || (window.__config && window.__config.extra && window.__config.extra.languages);
+  var cfg = window.LANG_CONFIG;
   if (!cfg) return;
 
   // ── helpers ───────────────────────────────────────────────
 
+  /** Detect active language (longest prefix wins). */
   function detectLang(path) {
     var p = path.replace(/\/$/, "");
-    // Check most-specific (longest) prefixes first so e.g. `book-zhtw/`
-    // is matched before `book/` (which is a prefix of it).
     var codes = Object.keys(cfg).sort(function (a, b) {
       return cfg[b].prefix.length - cfg[a].prefix.length;
     });
     for (var i = 0; i < codes.length; i++) {
-      var code = codes[i];
-      if (p.indexOf(cfg[code].prefix) !== -1) return code;
+      if (p.indexOf(cfg[codes[i]].prefix) !== -1) return codes[i];
     }
-    var def = null;
     for (var c in cfg) {
-      if (cfg.hasOwnProperty(c) && cfg[c].default) { def = c; break; }
+      if (cfg.hasOwnProperty(c) && cfg[c].default) return c;
     }
-    return def || "zh";
+    return "zh";
   }
 
-  function mapUrl(currentPath, targetCode) {
-    if (targetCode === activeLang) return null;
-    var src = cfg[activeLang];
+  /** Map current URL → target edition. */
+  function mapUrl(currentPath, targetCode, currentLang) {
+    if (targetCode === currentLang) return null;
+    var src = cfg[currentLang];
     var dst = cfg[targetCode];
     var url = currentPath.replace(src.prefix, dst.prefix);
     if (src.suffix) url = url.replace(src.suffix + ".md", ".md");
     if (dst.suffix) url = url.replace(/\.md$/, dst.suffix + ".md");
-    return url || dst.prefix + "introduction" + (dst.suffix || "") + ".md";
+    return (
+      url ||
+      dst.prefix + "introduction" + (dst.suffix || "") + ".md"
+    );
   }
 
   // ── sidebar rewriting ─────────────────────────────────────
 
+  /** Rewrite sidebar nav <a> hrefs for non-default editions. */
   function rewriteSidebar(targetCode) {
     var target = cfg[targetCode];
     var defCode = null;
-    for (var c in cfg) { if (cfg.hasOwnProperty(c) && cfg[c].default) { defCode = c; break; } }
+    for (var c in cfg) { if (cfg[c].default) { defCode = c; break; } }
     defCode = defCode || "zh";
     var defCfg = cfg[defCode];
 
@@ -80,39 +85,40 @@
   function render() {
     var path = location.pathname;
     var activeLang = detectLang(path);
-    var container = document.getElementById("lang-tabs-root");
-    if (!container) return;
+
+    var sel = document.getElementById("lang-selector");
+    if (!sel) return;
 
     // Skip if already populated.
-    if (container.children.length > 0) return;
+    if (sel.children.length > 0) return;
 
+    // Build options.
     var codes = Object.keys(cfg);
     for (var idx = 0; idx < codes.length; idx++) {
       var code = codes[idx];
-      var lang = cfg[code];
-      var btn = document.createElement("button");
-      btn.className =
-        "lang-tab" + (code === activeLang ? " lang-tab--active" : "");
-      btn.textContent = lang.label;
-      btn.setAttribute("role", "tab");
-      btn.setAttribute("aria-selected",
-                       String(code === activeLang));
-
-      (function (tgtCode) {
-        btn.addEventListener("click", function () {
-          if (tgtCode === activeLang) return;
-          var target = mapUrl(path, tgtCode);
-          if (target) location.href = target;
-        });
-      })(code);
-
-      container.appendChild(btn);
+      var opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = cfg[code].label;
+      opt.disabled = false;
+      if (code === activeLang) {
+        opt.selected = true;
+        opt.disabled = true;  // can't select what you're already on
+      }
+      sel.appendChild(opt);
     }
+
+    // Navigate on change.
+    sel.addEventListener("change", function () {
+      var target = sel.value;
+      if (!target || target === activeLang) return;
+      var url = mapUrl(path, target, activeLang);
+      if (url) location.href = url;
+    });
 
     // Rewrite sidebar for non-default languages.
     var defCode = null;
     for (var c in cfg) {
-      if (cfg.hasOwnProperty(c) && cfg[c].default) { defCode = c; break; }
+      if (cfg[c].default) { defCode = c; break; }
     }
     if (activeLang !== (defCode || "zh")) {
       rewriteSidebar(activeLang);
@@ -127,7 +133,6 @@
     } else {
       render();
     }
-    // Re-render on SPA instant-navigation.
     document.addEventListener("locationchange", render);
     var _pushState = history.pushState;
     history.pushState = function () {
