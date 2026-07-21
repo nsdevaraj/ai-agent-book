@@ -50,7 +50,7 @@
 | 6 | 🎯 **Agent 的評估** | 把表現變成可比較訊號：評估環境、指標、統計顯著性、評估驅動選型 | [讀](book-zhtw/chapter6.zhtw.md) | [10](chapter6/README.md) |
 | 7 | 🧠 **模型後訓練** | 預訓練/SFT/RL 三階段：何時選 SFT、何時選 RL，工具呼叫內化、樣本效率 | [讀](book-zhtw/chapter7.zhtw.md) | [14](chapter7/README.md) |
 | 8 | 🔄 **Agent 的自我進化** | 不改權重也能成長：經驗學習、從工具使用者到創造者 | [讀](book-zhtw/chapter8.zhtw.md) | [6](chapter8/README.md) |
-| 9 | 🎙️ **多模態與實時互動** | 從文字擴充套件到語音、GUI、物理世界：語音三典範、Computer Use、機器人 | [讀](book-zhtw/chapter9.zhtw.md) | [7](chapter9/README.md) |
+| 9 | 🎙️ **多模態與即時互動** | 從文字擴充套件到語音、GUI、物理世界：語音三典範、Computer Use、機器人 | [讀](book-zhtw/chapter9.zhtw.md) | [7](chapter9/README.md) |
 | 10 | 🤝 **多 Agent 協作** | 群體智慧高於個體：協作框架、上下文共享/隔離、湧現的「Agent 社會」 | [讀](book-zhtw/chapter10.zhtw.md) | [6](chapter10/README.md) |
 
 > 💡 **讀** = 在 GitHub 網頁直接讀章節正文（markdown）；**N** = 該章配套專案數，點選檢視程式碼。專案型別說明（✅ 可執行 / 📖 復現 / 🚧 設計）見各章 README。
@@ -154,4 +154,4 @@ git clone https://github.com/joonspk-research/generative_agents.git    chapter10
   </picture>
 </a>
 
-<sub>由 [`scripts/gen_star_history.py`](scripts/gen_star_history.py) 生成，[GitHub Actions](.github/workflows/star-history.yml) 每日自動更新 · 點選圖片檢視實時資料</sub>
+<sub>由 [`scripts/gen_star_history.py`](scripts/gen_star_history.py) 生成，[GitHub Actions](.github/workflows/star-history.yml) 每日自動更新 · 點選圖片檢視即時資料</sub>

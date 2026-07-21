@@ -1,4 +1,4 @@
-# 第 9 章 · 多模態與實時互動
+# 第 9 章 · 多模態與即時互動
 
 > 從文字擴充套件到語音、GUI、物理世界：語音三典範、Computer Use、機器人
 
@@ -8,7 +8,7 @@
 
 | 專案 | 型別 | 一句話說明 |
 | --- | :--: | --- |
-| [live-audio](live-audio/) | ✅ | 實時語音聊天，整合 VAD + ASR（Whisper/SenseVoice）+ LLM（GPT-4o/Gemini/Doubao）+ TTS（Fish Audio），WebSocket 低延遲 |
+| [live-audio](live-audio/) | ✅ | 即時語音聊天，整合 VAD + ASR（Whisper/SenseVoice）+ LLM（GPT-4o/Gemini/Doubao）+ TTS（Fish Audio），WebSocket 低延遲 |
 | `browser-use/` | 📖 | LLM 驅動的瀏覽器自動化框架，表單填寫/網頁導航/資料提取，支援多種 LLM 與雲/沙箱部署 |
 | `claude-quickstarts/` | 📖 | Claude API 快速入門示例與最佳實踐，涵蓋各種使用場景 |
 | [phone-agent](phone-agent/) | ✅ | 標準 ReAct Agent 自行想清號碼與目標，呼叫 `make_phone_call`（電話語音 API 抽象）完成通話並按需追問再撥 |
