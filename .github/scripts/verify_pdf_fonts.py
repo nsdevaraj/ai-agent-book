@@ -13,9 +13,10 @@ import sys
 import zlib
 from collections import Counter
 
-# A handful of Hiragino streams appear even in correct local builds (glyphs
-# PingFang lacks); a full fallback produces dozens.
-HIRAGINO_LIMIT = 10
+# A handful of Hiragino streams appear even in correct builds (rare glyphs
+# PingFang lacks; the fontconfig cascade on CI falls back slightly more often
+# than local CoreText: ~12 streams vs ~4). A wholesale fallback produces 50+.
+HIRAGINO_LIMIT = 20
 
 
 def scan(path):
