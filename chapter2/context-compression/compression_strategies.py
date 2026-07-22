@@ -188,9 +188,13 @@ Provide a focused summary:"""
                 summary_parts = []
                 for chunk in stream:
                     if chunk.choices and chunk.choices[0].delta.content:
-                        content = chunk.choices[0].delta.content
-                        print(content, end="", flush=True)
-                        summary_parts.append(content)
+                        # NB: do not name this `content` — that shadows the
+                        # `content` parameter (the original tool output) and
+                        # breaks the truncation fallback below when the stream
+                        # fails part-way through.
+                        delta_text = chunk.choices[0].delta.content
+                        print(delta_text, end="", flush=True)
+                        summary_parts.append(delta_text)
                 print("\n")  # New lines after streaming
                 compressed = "".join(summary_parts)
             else:
