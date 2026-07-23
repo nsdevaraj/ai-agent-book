@@ -64,26 +64,47 @@ jobs:
           brew install --cask font-noto-sans-cjk-jp || true
           brew install --cask font-noto-serif-cjk-jp || brew install --cask font-noto-serif-cjk || true
 
+      # Each language is built in its own background job so the ~8 XeLaTeX
+      # passes run concurrently instead of back-to-back. Output is captured per
+      # language and printed after all jobs finish (interleaved live logs would
+      # be unreadable). The ja build (WIP) runs in the same batch but is
+      # non-fatal — only a main-language failure fails the step.
+      # macOS runners ship bash 3.2, so no associative arrays: pid↔dir pairing
+      # is carried in a "pid:dir" string list.
       - name: Build PDFs
         env:
           PANGOCAIRO_BACKEND: fontconfig
         run: |
-          set -e
-          for dir in book book-zhtw book-en book-ru book-vi book-ta; do
-            (cd "$dir" && bash build_pdf.sh)
+          set -u
+          main="book book-zhtw book-en book-ru book-vi book-ta"
+          pids=""
+          for dir in $main book-ja; do
+            ( cd "$dir" && bash build_pdf.sh ) > "build_${dir}.log" 2>&1 &
+            pids="$pids $!:$dir"
           done
+          fail=0
+          for pd in $pids; do
+            pid="${pd%%:*}"; dir="${pd##*:}"
+            if wait "$pid"; then
+              echo "OK: $dir"
+            elif [ "$dir" = "book-ja" ]; then
+              echo "::warning::Japanese PDF build failed (WIP, non-fatal)"
+            else
+              echo "::error::PDF build failed for $dir"
+              fail=1
+            fi
+          done
+          for dir in $main book-ja; do
+            echo "===================== $dir ====================="
+            cat "build_${dir}.log" 2>/dev/null || true
+          done
+          exit $fail
 
       - name: Verify Chinese figure fonts
         run: |
           python3 .github/scripts/verify_pdf_fonts.py \
-            "book/深入理解-AI-Agent-李博杰-v1.2.pdf" \
-            "book-zhtw/深入理解-AI-Agent-李博杰-v1.2-zhtw.pdf"
-
-      # WIP: ja PDF is not yet validated (ElegantBook has no lang=jp). Kept as a
-      # separate non-fatal step so a failure never blocks the other languages.
-      - name: Build Japanese PDF (WIP, non-fatal)
-        continue-on-error: true
-        run: (cd book-ja && bash build_pdf.sh)
+            "book/深入理解-AI-Agent-李博杰-v1.3.pdf" \
+            "book-zhtw/深入理解-AI-Agent-李博杰-v1.3-zhtw.pdf"
 
       - name: Build EPUBs
         run: ./build_epub.sh all
@@ -99,19 +120,19 @@ jobs:
         run: |
           set -e
           out="$(mktemp -d)"
-          cp "book/深入理解-AI-Agent-李博杰-v1.2.pdf"              "$out/AI-Agents-in-Depth-zh-CN.pdf"
-          cp "book-zhtw/深入理解-AI-Agent-李博杰-v1.2-zhtw.pdf"   "$out/AI-Agents-in-Depth-zh-TW.pdf"
-          cp book-en/AI-Agents-in-Depth-Bojie-Li-v1.2.pdf        "$out/AI-Agents-in-Depth-en.pdf"
+          cp "book/深入理解-AI-Agent-李博杰-v1.3.pdf"              "$out/AI-Agents-in-Depth-zh-CN.pdf"
+          cp "book-zhtw/深入理解-AI-Agent-李博杰-v1.3-zhtw.pdf"   "$out/AI-Agents-in-Depth-zh-TW.pdf"
+          cp book-en/AI-Agents-in-Depth-Bojie-Li-v1.3.pdf        "$out/AI-Agents-in-Depth-en.pdf"
           cp book-ru/AI-Agents-in-Depth-ru.pdf                   "$out/AI-Agents-in-Depth-ru.pdf"
-          cp book-ta/AI-Agents-in-Depth-Bojie-Li-v1.2-ta.pdf     "$out/AI-Agents-in-Depth-ta.pdf"
-          cp book-vi/AI-Agents-in-Depth-Bojie-Li-v1.2-vi.pdf     "$out/AI-Agents-in-Depth-vi.pdf"
-          cp "book/深入理解-AI-Agent-李博杰-v1.2.epub"             "$out/AI-Agents-in-Depth-zh-CN.epub"
-          cp "book-zhtw/深入理解-AI-Agent-李博杰-v1.2-zhtw.epub"   "$out/AI-Agents-in-Depth-zh-TW.epub"
-          cp book-en/AI-Agents-in-Depth-Bojie-Li-v1.2.epub       "$out/AI-Agents-in-Depth-en.epub"
+          cp book-ta/AI-Agents-in-Depth-Bojie-Li-v1.3-ta.pdf     "$out/AI-Agents-in-Depth-ta.pdf"
+          cp book-vi/AI-Agents-in-Depth-Bojie-Li-v1.3-vi.pdf     "$out/AI-Agents-in-Depth-vi.pdf"
+          cp "book/深入理解-AI-Agent-李博杰-v1.3.epub"             "$out/AI-Agents-in-Depth-zh-CN.epub"
+          cp "book-zhtw/深入理解-AI-Agent-李博杰-v1.3-zhtw.epub"   "$out/AI-Agents-in-Depth-zh-TW.epub"
+          cp book-en/AI-Agents-in-Depth-Bojie-Li-v1.3.epub       "$out/AI-Agents-in-Depth-en.epub"
           cp book-ru/AI-Agents-in-Depth-ru.epub                  "$out/AI-Agents-in-Depth-ru.epub"
-          cp book-ta/AI-Agents-in-Depth-Bojie-Li-v1.2-ta.epub    "$out/AI-Agents-in-Depth-ta.epub"
-          cp book-vi/AI-Agents-in-Depth-Bojie-Li-v1.2-vi.epub    "$out/AI-Agents-in-Depth-vi.epub"
+          cp book-ta/AI-Agents-in-Depth-Bojie-Li-v1.3-ta.epub    "$out/AI-Agents-in-Depth-ta.epub"
+          cp book-vi/AI-Agents-in-Depth-Bojie-Li-v1.3-vi.epub    "$out/AI-Agents-in-Depth-vi.epub"
           # WIP: ja artifacts are copied only if the (non-fatal) ja build produced them.
-          cp book-ja/AI-Agents-in-Depth-Bojie-Li-v1.2-ja.pdf     "$out/AI-Agents-in-Depth-ja.pdf"  || echo "ja PDF not built yet (WIP) — skipping"
-          cp book-ja/AI-Agents-in-Depth-Bojie-Li-v1.2-ja.epub    "$out/AI-Agents-in-Depth-ja.epub" || echo "ja EPUB not built yet (WIP) — skipping"
+          cp book-ja/AI-Agents-in-Depth-Bojie-Li-v1.3-ja.pdf     "$out/AI-Agents-in-Depth-ja.pdf"  || echo "ja PDF not built yet (WIP) — skipping"
+          cp book-ja/AI-Agents-in-Depth-Bojie-Li-v1.3-ja.epub    "$out/AI-Agents-in-Depth-ja.epub" || echo "ja EPUB not built yet (WIP) — skipping"
           gh release upload latest "$out"/* --clobber --repo "${{ github.repository }}"
